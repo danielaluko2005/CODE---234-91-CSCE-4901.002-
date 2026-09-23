@@ -1,1 +1,88 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Network IoT Detection</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+    <h1>Network IoT Detection</h1>
+    <p>Accessible Smart Home Security Monitoring</p>
+</header>
+
+<nav aria-label="Main navigation">
+    <a href="#dashboard">Dashboard</a>
+    <a href="#traffic">Network Traffic</a>
+    <a href="#alerts">Security Alerts</a>
+    <a href="#incidents">Incidents</a>
+</nav>
+
+<main id="dashboard">
+
+    <section class="card">
+        <h2>Network Status</h2>
+        <p>Network monitoring has not started yet.</p>
+    </section>
+
+    <section class="card" id="traffic">
+        <h2>Network Traffic</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Time</th>
+                    <th>Source IP</th>
+                    <th>Destination IP</th>
+                    <th>Port</th>
+                    <th>Protocol</th>
+                    <th>Activity</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <td colspan="6">No network events recorded yet.</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="card" id="alerts">
+        <h2>Security Alerts</h2>
+
+        <div id="alertArea" aria-live="polite">
+            <p>No security alerts detected.</p>
+        </div>
+    </section>
+
+    <section class="card">
+        <h2>Network Statistics</h2>
+
+        <p>Total Events: 0</p>
+        <p>Security Alerts: 0</p>
+        <p>Detected Incidents: 0</p>
+    </section>
+
+    <section class="card" id="incidents">
+        <h2>Incident History</h2>
+
+        <p>No incidents have been recorded.</p>
+    </section>
+
+</main>
+
+<footer>
+    <p>Team Code 234-91</p>
+</footer>
+
+<script src="script.js"></script>
+
+</body>
+</html>
