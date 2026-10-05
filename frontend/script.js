@@ -45,23 +45,33 @@ const networkEvents = [
     }
 ];
 
+
 function getDeviceIcon(deviceType) {
     switch (deviceType) {
         case "thermostat":
-            return "🌡";
+            return "🌡️";
+
         case "camera":
             return "📷";
+
         case "sensor":
             return "🚪";
+
         case "plug":
             return "🔌";
+
         default:
             return "📱";
     }
 }
 
+
 function formatTime(timestamp) {
     const date = new Date(timestamp);
+
+    if (Number.isNaN(date.getTime())) {
+        return "--";
+    }
 
     return date.toLocaleTimeString([], {
         hour: "numeric",
@@ -69,20 +79,27 @@ function formatTime(timestamp) {
     });
 }
 
+
 function createActivityCard(event) {
     return `
         <article class="activity-card">
+
             <div class="device-icon">
                 ${getDeviceIcon(event.deviceType)}
             </div>
 
             <div class="activity-details">
+
                 <div class="activity-title-row">
-                    <h3>${event.deviceName}</h3>
+
+                    <h3>
+                        ${event.deviceName}
+                    </h3>
 
                     <span class="activity-time">
                         ${formatTime(event.timestamp)}
                     </span>
+
                 </div>
 
                 <p class="network-route">
@@ -94,10 +111,13 @@ function createActivityCard(event) {
                     • Port ${event.port}
                     • ${event.activity}
                 </p>
+
             </div>
+
         </article>
     `;
 }
+
 
 function renderRecentActivity(events) {
     const activityList =
@@ -116,6 +136,56 @@ function renderRecentActivity(events) {
     });
 }
 
+
+function updateEventCount(events) {
+    const eventCount =
+        document.getElementById("eventCount");
+
+    eventCount.textContent =
+        events.length;
+}
+
+
+function updateDeviceCount(events) {
+    const devices =
+        new Set(
+            events.map(
+                event => event.deviceName
+            )
+        );
+
+    const deviceCount =
+        document.getElementById("deviceCount");
+
+    deviceCount.textContent =
+        devices.size;
+}
+
+
+function updateLastUpdate(events) {
+    const lastUpdate =
+        document.getElementById("lastUpdate");
+
+    if (events.length === 0) {
+        lastUpdate.textContent = "--";
+        return;
+    }
+
+    const newestEvent =
+        events.reduce(
+            (latest, current) => {
+                return new Date(current.timestamp) >
+                    new Date(latest.timestamp)
+                    ? current
+                    : latest;
+            }
+        );
+
+    lastUpdate.textContent =
+        formatTime(newestEvent.timestamp);
+}
+
+
 function updateDashboard(events) {
     renderRecentActivity(events);
 
@@ -125,5 +195,6 @@ function updateDashboard(events) {
 
     updateLastUpdate(events);
 }
+
 
 updateDashboard(networkEvents);
