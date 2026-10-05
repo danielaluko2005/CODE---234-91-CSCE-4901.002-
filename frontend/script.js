@@ -116,4 +116,14 @@ function renderRecentActivity(events) {
     });
 }
 
-renderRecentActivity(networkEvents);
+function updateDashboard(events) {
+    renderRecentActivity(events);
+
+    updateEventCount(events);
+
+    updateDeviceCount(events);
+
+    updateLastUpdate(events);
+}
+
+updateDashboard(networkEvents);
