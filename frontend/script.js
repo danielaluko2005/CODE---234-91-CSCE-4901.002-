@@ -138,11 +138,9 @@ function renderRecentActivity(events) {
 
 
 function updateEventCount(events) {
-    const eventCount =
-        document.getElementById("eventCount");
-
-    eventCount.textContent =
-        events.length;
+    document.getElementById(
+        "eventCount"
+    ).textContent = events.length;
 }
 
 
@@ -154,17 +152,17 @@ function updateDeviceCount(events) {
             )
         );
 
-    const deviceCount =
-        document.getElementById("deviceCount");
-
-    deviceCount.textContent =
-        devices.size;
+    document.getElementById(
+        "deviceCount"
+    ).textContent = devices.size;
 }
 
 
 function updateLastUpdate(events) {
     const lastUpdate =
-        document.getElementById("lastUpdate");
+        document.getElementById(
+            "lastUpdate"
+        );
 
     if (events.length === 0) {
         lastUpdate.textContent = "--";
@@ -182,19 +180,103 @@ function updateLastUpdate(events) {
         );
 
     lastUpdate.textContent =
-        formatTime(newestEvent.timestamp);
+        formatTime(
+            newestEvent.timestamp
+        );
+}
+
+
+function hideAllStates() {
+    document.getElementById(
+        "loadingState"
+    ).classList.add("hidden");
+
+    document.getElementById(
+        "errorState"
+    ).classList.add("hidden");
+
+    document.getElementById(
+        "emptyState"
+    ).classList.add("hidden");
+}
+
+
+function showLoading() {
+    hideAllStates();
+
+    document.getElementById(
+        "loadingState"
+    ).classList.remove("hidden");
+}
+
+
+function showEmpty() {
+    hideAllStates();
+
+    document.getElementById(
+        "emptyState"
+    ).classList.remove("hidden");
+}
+
+
+function showError() {
+    hideAllStates();
+
+    document.getElementById(
+        "errorState"
+    ).classList.remove("hidden");
+}
+
+
+function showActivity() {
+    hideAllStates();
 }
 
 
 function updateDashboard(events) {
+    if (!Array.isArray(events)) {
+        showError();
+        return;
+    }
+
+    if (events.length === 0) {
+        document.getElementById(
+            "activityList"
+        ).innerHTML = "";
+
+        updateEventCount([]);
+        updateDeviceCount([]);
+        updateLastUpdate([]);
+
+        showEmpty();
+
+        return;
+    }
+
+    showActivity();
+
     renderRecentActivity(events);
-
     updateEventCount(events);
-
     updateDeviceCount(events);
-
     updateLastUpdate(events);
 }
 
 
-updateDashboard(networkEvents);
+function loadDashboard() {
+    showLoading();
+
+    setTimeout(() => {
+        updateDashboard(networkEvents);
+    }, 500);
+}
+
+
+document.getElementById(
+    "retryButton"
+).addEventListener(
+    "click",
+    loadDashboard
+);
+
+
+loadDashboard();
