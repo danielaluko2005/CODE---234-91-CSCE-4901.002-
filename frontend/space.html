@@ -15,7 +15,10 @@
 
 <body>
 
-    <main class="app">
+    <main
+        class="app"
+        aria-label="Network IoT Detection Dashboard"
+    >
 
         <!-- Header -->
         <header class="app-header">
@@ -46,7 +49,10 @@
                     Monitoring Status
                 </span>
 
-                <h2 id="monitoringStatus">
+                <h2
+                    id="monitoringStatus"
+                    aria-live="polite"
+                >
                     Active
                 </h2>
 
@@ -167,7 +173,10 @@
 
 
             <!-- Events inserted here -->
-            <div id="activityList"></div>
+            <div
+                id="activityList"
+                aria-live="polite"
+            ></div>
 
         </section>
 
@@ -195,6 +204,7 @@
                         <strong
                             id="backendStatus"
                             class="connected"
+                            aria-live="polite"
                         >
                             Demo Mode
                         </strong>
@@ -270,6 +280,8 @@
         </nav>
 
     </main>
-<script src="script.js"></script>
+
+    <script src="script.js"></script>
+
 </body>
 </html>
