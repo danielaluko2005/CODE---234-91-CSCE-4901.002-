@@ -1,3 +1,6 @@
+const USE_BACKEND = false;
+
+
 const networkEvents = [
     {
         id: 1,
@@ -160,9 +163,7 @@ function updateDeviceCount(events) {
 
 function updateLastUpdate(events) {
     const lastUpdate =
-        document.getElementById(
-            "lastUpdate"
-        );
+        document.getElementById("lastUpdate");
 
     if (events.length === 0) {
         lastUpdate.textContent = "--";
@@ -180,9 +181,7 @@ function updateLastUpdate(events) {
         );
 
     lastUpdate.textContent =
-        formatTime(
-            newestEvent.timestamp
-        );
+        formatTime(newestEvent.timestamp);
 }
 
 
@@ -233,6 +232,56 @@ function showActivity() {
 }
 
 
+function setDashboardMode(backendConnected) {
+    const backendStatus =
+        document.getElementById("backendStatus");
+
+    const monitoringMessage =
+        document.getElementById("monitoringMessage");
+
+    const scanStatus =
+        document.getElementById("scanStatus");
+
+    if (backendConnected) {
+        backendStatus.textContent =
+            "Connected";
+
+        monitoringMessage.textContent =
+            "Your network is being monitored";
+
+        scanStatus.textContent =
+            "Running";
+    } else {
+        backendStatus.textContent =
+            "Demo Mode";
+
+        monitoringMessage.textContent =
+            "Using simulated network activity";
+
+        scanStatus.textContent =
+            "Simulated";
+    }
+}
+
+
+function normalizeNetworkEvents(data) {
+    if (Array.isArray(data)) {
+        return data;
+    }
+
+    if (
+        data &&
+        Array.isArray(data.events)
+    ) {
+        return data.events;
+    }
+
+    throw new Error(
+        "Invalid network event data"
+    );
+}
+
+
 function updateDashboard(events) {
     if (!Array.isArray(events)) {
         showError();
@@ -262,12 +311,38 @@ function updateDashboard(events) {
 }
 
 
-function loadDashboard() {
+async function loadDashboard() {
     showLoading();
 
-    setTimeout(() => {
+    if (!USE_BACKEND) {
+        setDashboardMode(false);
+
+        setTimeout(() => {
+            updateDashboard(networkEvents);
+        }, 500);
+
+        return;
+    }
+
+    try {
+        const {
+            fetchNetworkEvents
+        } = await import("./api.js");
+
+        const response =
+            await fetchNetworkEvents();
+
+        const events =
+            normalizeNetworkEvents(response);
+
+        setDashboardMode(true);
+
+        updateDashboard(events);
+    } catch (error) {
+        setDashboardMode(false);
+
         updateDashboard(networkEvents);
-    }, 500);
+    }
 }
 
 
