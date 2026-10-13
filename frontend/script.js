@@ -1,3 +1,6 @@
+const USE_BACKEND = false;
+
+
 const networkEvents = [
     {
         id: 1,
@@ -138,11 +141,9 @@ function renderRecentActivity(events) {
 
 
 function updateEventCount(events) {
-    const eventCount =
-        document.getElementById("eventCount");
-
-    eventCount.textContent =
-        events.length;
+    document.getElementById(
+        "eventCount"
+    ).textContent = events.length;
 }
 
 
@@ -154,11 +155,9 @@ function updateDeviceCount(events) {
             )
         );
 
-    const deviceCount =
-        document.getElementById("deviceCount");
-
-    deviceCount.textContent =
-        devices.size;
+    document.getElementById(
+        "deviceCount"
+    ).textContent = devices.size;
 }
 
 
@@ -186,15 +185,173 @@ function updateLastUpdate(events) {
 }
 
 
+function hideAllStates() {
+    document.getElementById(
+        "loadingState"
+    ).classList.add("hidden");
+
+    document.getElementById(
+        "errorState"
+    ).classList.add("hidden");
+
+    document.getElementById(
+        "emptyState"
+    ).classList.add("hidden");
+}
+
+
+function showLoading() {
+    hideAllStates();
+
+    document.getElementById(
+        "loadingState"
+    ).classList.remove("hidden");
+}
+
+
+function showEmpty() {
+    hideAllStates();
+
+    document.getElementById(
+        "emptyState"
+    ).classList.remove("hidden");
+}
+
+
+function showError() {
+    hideAllStates();
+
+    document.getElementById(
+        "errorState"
+    ).classList.remove("hidden");
+}
+
+
+function showActivity() {
+    hideAllStates();
+}
+
+
+function setDashboardMode(backendConnected) {
+    const backendStatus =
+        document.getElementById("backendStatus");
+
+    const monitoringMessage =
+        document.getElementById("monitoringMessage");
+
+    const scanStatus =
+        document.getElementById("scanStatus");
+
+    if (backendConnected) {
+        backendStatus.textContent =
+            "Connected";
+
+        monitoringMessage.textContent =
+            "Your network is being monitored";
+
+        scanStatus.textContent =
+            "Running";
+    } else {
+        backendStatus.textContent =
+            "Demo Mode";
+
+        monitoringMessage.textContent =
+            "Using simulated network activity";
+
+        scanStatus.textContent =
+            "Simulated";
+    }
+}
+
+
+function normalizeNetworkEvents(data) {
+    if (Array.isArray(data)) {
+        return data;
+    }
+
+    if (
+        data &&
+        Array.isArray(data.events)
+    ) {
+        return data.events;
+    }
+
+    throw new Error(
+        "Invalid network event data"
+    );
+}
+
+
 function updateDashboard(events) {
+    if (!Array.isArray(events)) {
+        showError();
+        return;
+    }
+
+    if (events.length === 0) {
+        document.getElementById(
+            "activityList"
+        ).innerHTML = "";
+
+        updateEventCount([]);
+        updateDeviceCount([]);
+        updateLastUpdate([]);
+
+        showEmpty();
+
+        return;
+    }
+
+    showActivity();
+
     renderRecentActivity(events);
-
     updateEventCount(events);
-
     updateDeviceCount(events);
-
     updateLastUpdate(events);
 }
 
 
-updateDashboard(networkEvents);
+async function loadDashboard() {
+    showLoading();
+
+    if (!USE_BACKEND) {
+        setDashboardMode(false);
+
+        setTimeout(() => {
+            updateDashboard(networkEvents);
+        }, 500);
+
+        return;
+    }
+
+    try {
+        const {
+            fetchNetworkEvents
+        } = await import("./api.js");
+
+        const response =
+            await fetchNetworkEvents();
+
+        const events =
+            normalizeNetworkEvents(response);
+
+        setDashboardMode(true);
+
+        updateDashboard(events);
+    } catch (error) {
+        setDashboardMode(false);
+
+        updateDashboard(networkEvents);
+    }
+}
+
+
+document.getElementById(
+    "retryButton"
+).addEventListener(
+    "click",
+    loadDashboard
+);
+
+
+loadDashboard();
