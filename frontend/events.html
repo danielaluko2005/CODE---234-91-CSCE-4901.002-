@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Events &amp; History | Network IoT Detection</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="events.css">
+</head>
+<body>
+    <a href="#eventsMain" class="skip-link">Skip to network events</a>
+
+    <main id="eventsMain" class="app" aria-label="Network Events and Event History">
+        <!-- Header matching Tanya's Dashboard -->
+        <header class="app-header">
+            <div>
+                <h1>Network Events</h1>
+                <p>Full Event History &amp; Packet Inspection (F1/R1 &amp; F2/R2)</p>
+            </div>
+            <button
+                id="refreshEventsButton"
+                class="icon-button"
+                type="button"
+                aria-label="Refresh network events"
+                title="Refresh Events"
+            >
+                ↻
+            </button>
+        </header>
+
+        <!-- Connection & Summary Status Bar -->
+        <section class="status-card" aria-label="Event Log Connection Status">
+            <div class="status-icon" aria-hidden="true">📋</div>
+            <div class="status-content">
+                <span class="label">Event History Log Status</span>
+                <h2 id="eventsModeHeading" aria-live="polite">Active Log</h2>
+                <p id="eventsStatusMessage">Showing recorded smart-home network events</p>
+            </div>
+            <span id="eventsModeDot" class="status-dot" aria-label="Event log active"></span>
+        </section>
+
+        <!-- Summary Metrics -->
+        <section class="metrics" aria-label="Event History Summary">
+            <article class="metric-card">
+                <span class="metric-icon purple" aria-hidden="true">📊</span>
+                <div>
+                    <p>Total Events</p>
+                    <strong id="totalEventsMetric">0</strong>
+                    <span id="filteredEventsCount">0 currently shown</span>
+                </div>
+            </article>
+
+            <article class="metric-card">
+                <span class="metric-icon" aria-hidden="true">🕒</span>
+                <div>
+                    <p>Latest Timestamp</p>
+                    <strong id="latestEventTime">--</strong>
+                    <span id="backendConnectionBadge">Demo Mode</span>
+                </div>
+            </article>
+        </section>
+
+        <!-- Filter & Search Controls -->
+        <section class="events-filter-card" aria-label="Search and Filter Network Events">
+            <div class="filter-row">
+                <div class="filter-field">
+                    <label for="eventSearchInput">Search Device, IP, Port, or Activity</label>
+                    <input
+                        id="eventSearchInput"
+                        type="search"
+                        placeholder="Search e.g. 192.168.1.10, 443, Thermostat..."
+                    >
+                </div>
+
+                <div class="filter-field">
+                    <label for="protocolFilterSelect">Protocol</label>
+                    <select id="protocolFilterSelect">
+                        <option value="ALL">All Protocols</option>
+                        <option value="TCP">TCP</option>
+                        <option value="UDP">UDP</option>
+                        <option value="MQTT">MQTT</option>
+                        <option value="HTTP">HTTP</option>
+                    </select>
+                </div>
+
+                <div class="filter-field">
+                    <label for="severityFilterSelect">Activity Status</label>
+                    <select id="severityFilterSelect">
+                        <option value="ALL">All Activity</option>
+                        <option value="normal">Normal Log (Green)</option>
+                        <option value="unusual">At Risk / Unusual (Yellow)</option>
+                        <option value="threat">Threat / Alert (Red)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="filter-actions">
+                <button id="resetFiltersButton" type="button" class="secondary-btn">
+                    Reset Filters
+                </button>
+            </div>
+        </section>
+
+        <!-- Screen Reader Announcement Region -->
+        <div id="srEventAnnouncer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+        <!-- Selected Event Details Inspection Card -->
+        <section id="eventDetailsSection" class="event-details-card" aria-labelledby="eventDetailsHeading" aria-live="polite">
+            <div class="section-heading">
+                <h2 id="eventDetailsHeading">Selected Event Details</h2>
+                <span id="selectedEventBadge" class="severity-pill severity-normal">Select an event below</span>
+            </div>
+
+            <div id="eventDetailsBody" class="event-details-grid">
+                <p class="details-empty-prompt">
+                    Click or tap any event in the list or table below to inspect full Source IP, Destination IP, Port, Protocol, Activity, and Timestamp metadata.
+                </p>
+            </div>
+        </section>
+
+        <!-- Full Network Event List & Table -->
+        <section class="activity-section" aria-labelledby="fullEventListHeading">
+            <div class="section-heading">
+                <h2 id="fullEventListHeading">Full Network Event History</h2>
+                <a href="space.html" class="view-all">← Back to Home</a>
+            </div>
+
+            <!-- Loading State -->
+            <div id="eventsLoadingState" class="message-state hidden" role="status" aria-live="polite">
+                Loading network event history...
+            </div>
+
+            <!-- Error State -->
+            <div id="eventsErrorState" class="message-state error-state hidden" role="alert">
+                <p>Unable to load network event history from backend.</p>
+                <button id="eventsRetryButton" type="button">Retry</button>
+            </div>
+
+            <!-- Empty State -->
+            <div id="eventsEmptyState" class="message-state hidden" role="status">
+                No network events match your current search or filter criteria.
+            </div>
+
+            <!-- Interactive Event Cards (Mobile + Quick Select) -->
+            <div id="fullEventsCardList" class="events-card-list" aria-live="polite"></div>
+
+            <!-- Full Structured Table (Source IP, Destination IP, Port, Protocol, Activity, Timestamp) -->
+            <div class="events-table-card">
+                <h3 class="table-subheading">Detailed Packet Log Table</h3>
+                <div class="table-scroll">
+                    <table class="events-log-table" aria-label="Full Network Events Table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Device</th>
+                                <th scope="col">Source IP</th>
+                                <th scope="col">Destination IP</th>
+                                <th scope="col">Port</th>
+                                <th scope="col">Protocol</th>
+                                <th scope="col">Activity</th>
+                                <th scope="col">Timestamp</th>
+                            </tr>
+                        </thead>
+                        <tbody id="eventsTableBody">
+                            <tr>
+                                <td colspan="7">Loading events...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Bottom Navigation matching Tanya's space.html -->
+        <nav class="bottom-nav" aria-label="Main navigation">
+            <a href="space.html" class="nav-item">
+                <span>⌂</span>
+                <small>Home</small>
+            </a>
+
+            <a href="events.html" class="nav-item active" aria-current="page">
+                <span>☷</span>
+                <small>Events</small>
+            </a>
+
+            <button
+                type="button"
+                class="nav-item disabled"
+                aria-label="Alerts planned for later sprint"
+            >
+                <span>♢</span>
+                <small>Alerts</small>
+            </button>
+
+            <button
+                type="button"
+                class="nav-item disabled"
+                aria-label="Settings planned for later sprint"
+            >
+                <span>⚙</span>
+                <small>Settings</small>
+            </button>
+        </nav>
+    </main>
+
+    <script src="events.js"></script>
+</body>
+</html>
