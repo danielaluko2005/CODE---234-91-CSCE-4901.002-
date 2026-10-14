@@ -25,14 +25,17 @@ class SmartHomeDevice:
             return false
     
     def is_connected(self)
-        if self.connected == true && sourceip != "XXX.XXX.XXX.XXX" && destip != "XXX.XXX.XXX.XXX":
+        if self.connected == true and self.sourceip != "XXX.XXX.XXX.XXX" and self.destip != "XXX.XXX.XXX.XXX":
             return true 
         else:
             return false
+
     def check_status(self)
-        if self.status == "stable":
-            return true
+        if self.connected == true and self.software == true and self.working == true:
+            self.status == "stable"
+            return self.status
         else:
+            self.status == "unstable"
             return false
             
     def has_software(self)
@@ -40,11 +43,19 @@ class SmartHomeDevice:
             return true 
         else:
             return false
+    
     def sound_on(self)
         if self.sound == true:
             return true 
         else:
             return false
+
+    def is_working(self)
+        if self.working == true:
+            return true
+        else:
+            return false 
+    
  
 
     #follow this same format for th rest of the methods
@@ -56,7 +67,7 @@ class SmartTherm(SmartHomeDevice):
 
 
     def check_temp(self):
-        if temprature <  55 or temprature > 85:
+        if self.temprature <  55 or self.temprature > 85:
             self.valid_temp = false
             return false 
         else:
@@ -73,17 +84,31 @@ class SmartDoor(SmartHomeDevice):
         self.door = true
 
     def is_locked(self):
-        if locked == true:
+        if self.locked == true:
             return true 
         else:
             return false
 
     def is_closed(self):
-        if door == true:
+        if self.door == true:
             return true
         else 
             return false
-  
+    
+    # def lock_door(self):
+    #     if self.locked == false:
+    #         print("---Security Alert---")
+    #         print("The door is open.")
+    #     question = input("Would you like to lock the door? (Y/N)")
+    #     if question == "Y":
+    #         print ("Locking door...")
+    #         self.locked = true
+    #         print("The door has been locked.")
+    #     else:
+    #         print("The door remains unlocked. Please lock the door.")
+
+        
+
 class SmartCamera(SmartHomeDevice):
     def __init__(self, power=false, connected=false, software=false, status="stable", sound="Beep", sourceip="XXX.XXX.XXX.XXX", destip="XXX.XXX.XXX.XXX", port=8080, working=false, volume=50)
         super().__init__(power=false, connected=false, software=false, status="stable", sound="Beep", sourceip="XXX.XXX.XXX.XXX", destip="XXX.XXX.XXX.XXX", port=8080, working=false, volume=50)
@@ -92,21 +117,41 @@ class SmartCamera(SmartHomeDevice):
         self.focused = false 
         self.covered = false
 
-    def is_capture(self):
-        if capture == true:
+    def is_capturing(self):
+        if self.capture == true and self.covered == false and self.focused == true:
             return true 
         else:
             return false
 
-    def is_motion_detected(self):
-        if motion == true:
+    def has_motion(self):
+        if self.motion == true:
             return true 
+        else: 
+            return false
+    def is_focused(self):
+        if self.focused == true:
+            return true
         else:
             return false
->>>>>>> Stashed changes
+    def is_covered(self):
+        if self.covered == true:
+            return true
+        else:
+            return false
 
-#Child class for each kind of device 
+    def is_working(self):
+        if self.capture == true and self.motion == true and self.focused == true:
+            return true
+        else:
+            return false 
 
-#Classes keep track of all the device data 
+    # def capture(self):
+    #     if self.is_capturing() == true:
+    #         print("Starting live capture...")
+    #     else:
+    #         print("Camera is not responding to capture request.")
 
+    
+
+#Add smart device for garage door, smart light, and smart fridge 
 #Flag for the state of machine (compromised vs. secure)
