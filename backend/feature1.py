@@ -76,6 +76,12 @@ class SmartTherm(SmartHomeDevice):
 
     def display_temp(self):
         print("", self.temprature, "F")
+    
+    def is_working(self):
+        if self.valid_temp == true
+            return true
+        else:
+            return false
 
 class SmartDoor(SmartHomeDevice):
     def __init__(self, power=false, connected=false, software=false, status="stable", sound="Beep", sourceip="XXX.XXX.XXX.XXX", destip="XXX.XXX.XXX.XXX", port=8080, working=false, volume=50)
