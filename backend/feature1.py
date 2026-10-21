@@ -25,13 +25,14 @@ class SmartHomeDevice:
             return false
     
     def is_connected(self)
-        if self.connected == true and self.sourceip != "XXX.XXX.XXX.XXX" and self.destip != "XXX.XXX.XXX.XXX":
+        if  self.sourceip != "XXX.XXX.XXX.XXX" and self.destip != "XXX.XXX.XXX.XXX" and self.port != 0:
+            self.connected == true
             return true 
         else:
             return false
 
     def check_status(self)
-        if self.connected == true and self.software == true and self.working == true:
+        if self.connected == true and self.software == true and self.working == true and self.power == true:
             self.status == "stable"
             return self.status
         else:
@@ -50,11 +51,13 @@ class SmartHomeDevice:
         else:
             return false
 
-    def is_working(self)
-        if self.working == true:
-            return true
+    def check_working(self)
+        if self.sound == true and self.power == true and self.volume > 0:
+            self.working == true
+            return true 
         else:
-            return false 
+            self.working == false
+            return false
     
  
 
@@ -78,7 +81,8 @@ class SmartTherm(SmartHomeDevice):
         print("", self.temprature, "F")
     
     def is_working(self):
-        if self.valid_temp == true
+        super().check_working()
+        if self.valid_temp == true and self.stable == true and self.working == true:
             return true
         else:
             return false
@@ -99,6 +103,13 @@ class SmartDoor(SmartHomeDevice):
         if self.door == true:
             return true
         else 
+            return false
+    
+    def is_working(self):
+        super().check_working()
+        if self.locked == true and self.door == true and super().check_working():
+            return true
+        else:
             return false
     
     # def lock_door(self):
@@ -146,7 +157,7 @@ class SmartCamera(SmartHomeDevice):
             return false
 
     def is_working(self):
-        if self.capture == true and self.motion == true and self.focused == true:
+        if self.capture == true and self.motion == true and self.focused == true and super().check_working():
             return true
         else:
             return false 
