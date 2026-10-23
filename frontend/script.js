@@ -31,8 +31,8 @@ const networkEvents = [
         sourceIp: "192.168.1.20",
         destinationIp: "192.168.1.1",
         protocol: "TCP",
-        port: 1883,
-        activity: "Sensor Message",
+        port: 443,
+        activity: "Device Update",
         timestamp: "2026-10-05T12:40:00"
     },
     {
@@ -101,7 +101,14 @@ function renderRecentActivity(events) {
     const list = document.getElementById("activityList");
     list.innerHTML = "";
 
-    events.slice(0, 4).forEach(event => {
+    const recentEvents = [...events]
+        .sort(
+            (a, b) =>
+                new Date(b.timestamp) - new Date(a.timestamp)
+        )
+        .slice(0, 4);
+
+    recentEvents.forEach(event => {
         list.insertAdjacentHTML(
             "beforeend",
             createActivityCard(event)
@@ -151,7 +158,6 @@ function hideAllStates() {
         .classList.add("hidden");
 }
 
-// Sprint 2: Remove stale activity cards when changing states.
 function clearActivity() {
     document.getElementById("activityList").innerHTML = "";
 }
@@ -166,6 +172,7 @@ function showLoading() {
 
 function showEmpty() {
     hideAllStates();
+    clearActivity();
 
     document.getElementById("emptyState")
         .classList.remove("hidden");
@@ -236,17 +243,22 @@ function normalizeNetworkEvents(data) {
     throw new Error("Invalid network event data");
 }
 
+// Sprint 2: Reset dashboard counts and state for empty/invalid data.
 function updateDashboard(events) {
     if (!Array.isArray(events)) {
+        updateEventCount([]);
+        updateDeviceCount([]);
+        updateLastUpdate([]);
+
         showError();
         return;
     }
 
     if (events.length === 0) {
-        document.getElementById("activityList").innerHTML = "";
         updateEventCount([]);
         updateDeviceCount([]);
         updateLastUpdate([]);
+
         showEmpty();
         return;
     }
