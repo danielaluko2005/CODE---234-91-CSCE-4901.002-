@@ -1,5 +1,5 @@
-const USE_BACKEND = false;
 
+const USE_BACKEND = false;
 
 const networkEvents = [
     {
@@ -48,26 +48,15 @@ const networkEvents = [
     }
 ];
 
-
 function getDeviceIcon(deviceType) {
     switch (deviceType) {
-        case "thermostat":
-            return "🌡️";
-
-        case "camera":
-            return "📷";
-
-        case "sensor":
-            return "🚪";
-
-        case "plug":
-            return "🔌";
-
-        default:
-            return "📱";
+        case "thermostat": return "🌡️";
+        case "camera": return "📷";
+        case "sensor": return "🚪";
+        case "plug": return "🔌";
+        default: return "📱";
     }
 }
-
 
 function formatTime(timestamp) {
     const date = new Date(timestamp);
@@ -82,205 +71,170 @@ function formatTime(timestamp) {
     });
 }
 
-
 function createActivityCard(event) {
     return `
         <article class="activity-card">
-
             <div class="device-icon">
                 ${getDeviceIcon(event.deviceType)}
             </div>
-
             <div class="activity-details">
-
                 <div class="activity-title-row">
-
-                    <h3>
-                        ${event.deviceName}
-                    </h3>
-
+                    <h3>${event.deviceName}</h3>
                     <span class="activity-time">
                         ${formatTime(event.timestamp)}
                     </span>
-
                 </div>
-
                 <p class="network-route">
                     ${event.sourceIp} → ${event.destinationIp}
                 </p>
-
                 <p class="network-details">
                     ${event.protocol}
                     • Port ${event.port}
                     • ${event.activity}
                 </p>
-
             </div>
-
         </article>
     `;
 }
 
-
 function renderRecentActivity(events) {
-    const activityList =
-        document.getElementById("activityList");
+    const list = document.getElementById("activityList");
+    list.innerHTML = "";
 
-    activityList.innerHTML = "";
-
-    const recentEvents =
-        events.slice(0, 4);
-
-    recentEvents.forEach(event => {
-        activityList.insertAdjacentHTML(
+    events.slice(0, 4).forEach(event => {
+        list.insertAdjacentHTML(
             "beforeend",
             createActivityCard(event)
         );
     });
 }
 
-
 function updateEventCount(events) {
-    document.getElementById(
-        "eventCount"
-    ).textContent = events.length;
+    document.getElementById("eventCount").textContent =
+        events.length;
 }
-
 
 function updateDeviceCount(events) {
-    const devices =
-        new Set(
-            events.map(
-                event => event.deviceName
-            )
-        );
+    const devices = new Set(
+        events.map(event => event.deviceName)
+    );
 
-    document.getElementById(
-        "deviceCount"
-    ).textContent = devices.size;
+    document.getElementById("deviceCount").textContent =
+        devices.size;
 }
 
-
 function updateLastUpdate(events) {
-    const lastUpdate =
-        document.getElementById("lastUpdate");
+    const element = document.getElementById("lastUpdate");
 
     if (events.length === 0) {
-        lastUpdate.textContent = "--";
+        element.textContent = "--";
         return;
     }
 
-    const newestEvent =
-        events.reduce(
-            (latest, current) => {
-                return new Date(current.timestamp) >
-                    new Date(latest.timestamp)
-                    ? current
-                    : latest;
-            }
-        );
+    const newest = events.reduce((latest, current) =>
+        new Date(current.timestamp) > new Date(latest.timestamp)
+            ? current
+            : latest
+    );
 
-    lastUpdate.textContent =
-        formatTime(newestEvent.timestamp);
+    element.textContent = formatTime(newest.timestamp);
 }
-
 
 function hideAllStates() {
-    document.getElementById(
-        "loadingState"
-    ).classList.add("hidden");
+    document.getElementById("loadingState")
+        .classList.add("hidden");
 
-    document.getElementById(
-        "errorState"
-    ).classList.add("hidden");
+    document.getElementById("errorState")
+        .classList.add("hidden");
 
-    document.getElementById(
-        "emptyState"
-    ).classList.add("hidden");
+    document.getElementById("emptyState")
+        .classList.add("hidden");
 }
 
+// Sprint 2: Remove stale activity cards when changing states.
+function clearActivity() {
+    document.getElementById("activityList").innerHTML = "";
+}
 
 function showLoading() {
     hideAllStates();
+    clearActivity();
 
-    document.getElementById(
-        "loadingState"
-    ).classList.remove("hidden");
+    document.getElementById("loadingState")
+        .classList.remove("hidden");
 }
-
 
 function showEmpty() {
     hideAllStates();
 
-    document.getElementById(
-        "emptyState"
-    ).classList.remove("hidden");
+    document.getElementById("emptyState")
+        .classList.remove("hidden");
 }
-
 
 function showError() {
     hideAllStates();
+    clearActivity();
 
-    document.getElementById(
-        "errorState"
-    ).classList.remove("hidden");
+    document.getElementById("errorState")
+        .classList.remove("hidden");
 }
-
 
 function showActivity() {
     hideAllStates();
 }
 
-
 function setDashboardMode(backendConnected) {
-    const backendStatus =
-        document.getElementById("backendStatus");
+    const monitoringStatus =
+        document.getElementById("monitoringStatus");
+
+    const monitoringIndicator =
+        document.getElementById("monitoringIndicator");
 
     const monitoringMessage =
         document.getElementById("monitoringMessage");
+
+    const backendStatus =
+        document.getElementById("backendStatus");
 
     const scanStatus =
         document.getElementById("scanStatus");
 
     if (backendConnected) {
-        backendStatus.textContent =
-            "Connected";
-
+        monitoringStatus.textContent = "Live Monitoring";
         monitoringMessage.textContent =
-            "Your network is being monitored";
+            "Displaying events received from the backend";
+        backendStatus.textContent = "Connected";
+        scanStatus.textContent = "Running";
 
-        scanStatus.textContent =
-            "Running";
+        monitoringIndicator.setAttribute(
+            "aria-label",
+            "Backend monitoring connected"
+        );
     } else {
-        backendStatus.textContent =
-            "Demo Mode";
-
+        monitoringStatus.textContent = "Demo Mode";
         monitoringMessage.textContent =
-            "Using simulated network activity";
+            "Displaying simulated network activity";
+        backendStatus.textContent = "Demo Mode";
+        scanStatus.textContent = "Simulated";
 
-        scanStatus.textContent =
-            "Simulated";
+        monitoringIndicator.setAttribute(
+            "aria-label",
+            "Demo monitoring status"
+        );
     }
 }
-
 
 function normalizeNetworkEvents(data) {
     if (Array.isArray(data)) {
         return data;
     }
 
-    if (
-        data &&
-        Array.isArray(data.events)
-    ) {
+    if (data && Array.isArray(data.events)) {
         return data.events;
     }
 
-    throw new Error(
-        "Invalid network event data"
-    );
+    throw new Error("Invalid network event data");
 }
-
 
 function updateDashboard(events) {
     if (!Array.isArray(events)) {
@@ -289,27 +243,20 @@ function updateDashboard(events) {
     }
 
     if (events.length === 0) {
-        document.getElementById(
-            "activityList"
-        ).innerHTML = "";
-
+        document.getElementById("activityList").innerHTML = "";
         updateEventCount([]);
         updateDeviceCount([]);
         updateLastUpdate([]);
-
         showEmpty();
-
         return;
     }
 
     showActivity();
-
     renderRecentActivity(events);
     updateEventCount(events);
     updateDeviceCount(events);
     updateLastUpdate(events);
 }
-
 
 async function loadDashboard() {
     showLoading();
@@ -325,33 +272,21 @@ async function loadDashboard() {
     }
 
     try {
-        const {
-            fetchNetworkEvents
-        } = await import("./api.js");
+        const { fetchNetworkEvents } =
+            await import("./api.js");
 
-        const response =
-            await fetchNetworkEvents();
-
-        const events =
-            normalizeNetworkEvents(response);
+        const response = await fetchNetworkEvents();
+        const events = normalizeNetworkEvents(response);
 
         setDashboardMode(true);
-
         updateDashboard(events);
     } catch (error) {
         setDashboardMode(false);
-
         updateDashboard(networkEvents);
     }
 }
 
-
-document.getElementById(
-    "retryButton"
-).addEventListener(
-    "click",
-    loadDashboard
-);
-
+document.getElementById("retryButton")
+    .addEventListener("click", loadDashboard);
 
 loadDashboard();
