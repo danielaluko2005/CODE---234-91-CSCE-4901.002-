@@ -1,6 +1,7 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
 
@@ -24,6 +25,7 @@
 
         <!-- Header -->
         <header class="app-header">
+
             <div>
                 <h1>DOME ALERT</h1>
                 <p>Smart Home Network Monitoring</p>
@@ -32,21 +34,30 @@
             <button
                 class="icon-button"
                 type="button"
-                aria-label="Settings"
+                aria-label="Settings planned for a later sprint"
+                disabled
             >
                 ⚙
             </button>
+
         </header>
 
 
         <!-- Monitoring Status -->
-        <section class="status-card">
+        <section
+            class="status-card"
+            aria-label="Network monitoring status"
+        >
 
-            <div class="status-icon">
+            <div
+                class="status-icon"
+                aria-hidden="true"
+            >
                 📡
             </div>
 
             <div class="status-content">
+
                 <span class="label">
                     Monitoring Status
                 </span>
@@ -55,63 +66,90 @@
                     id="monitoringStatus"
                     aria-live="polite"
                 >
-                    Active
+                    Demo Mode
                 </h2>
 
                 <p id="monitoringMessage">
-                    Your network is being monitored
+                    Displaying simulated network activity
                 </p>
+
             </div>
 
             <span
                 id="monitoringIndicator"
                 class="status-dot"
-                aria-label="Monitoring active"
+                role="img"
+                aria-label="Demo monitoring status"
             ></span>
 
         </section>
 
 
-        <!-- Metrics -->
-        <section class="metrics">
+        <!-- Dashboard Metrics -->
+        <section
+            class="metrics"
+            aria-label="Network monitoring summary"
+        >
 
+            <!-- Connected Devices -->
             <article class="metric-card">
 
-                <span class="metric-icon">
+                <span
+                    class="metric-icon"
+                    aria-hidden="true"
+                >
                     📱
                 </span>
 
                 <div>
-                    <p>Connected Devices</p>
 
-                    <strong id="deviceCount">
+                    <p>
+                        Connected Devices
+                    </p>
+
+                    <strong
+                        id="deviceCount"
+                        aria-live="polite"
+                    >
                         0
                     </strong>
 
                     <span>
-                        Devices online
+                        Devices in current data
                     </span>
+
                 </div>
 
             </article>
 
 
+            <!-- Network Events -->
             <article class="metric-card">
 
-                <span class="metric-icon purple">
+                <span
+                    class="metric-icon purple"
+                    aria-hidden="true"
+                >
                     📋
                 </span>
 
                 <div>
-                    <p>Network Events</p>
 
-                    <strong id="eventCount">
+                    <p>
+                        Network Events
+                    </p>
+
+                    <strong
+                        id="eventCount"
+                        aria-live="polite"
+                    >
                         0
                     </strong>
 
                     <span>
-                        Events recorded
+                        Events in current data
                     </span>
+
                 </div>
 
             </article>
@@ -120,11 +158,14 @@
 
 
         <!-- Recent Network Activity -->
-        <section class="activity-section">
+        <section
+            class="activity-section"
+            aria-labelledby="recentActivityHeading"
+        >
 
             <div class="section-heading">
 
-                <h2>
+                <h2 id="recentActivityHeading">
                     Recent Network Activity
                 </h2>
 
@@ -142,6 +183,8 @@
             <div
                 id="loadingState"
                 class="message-state hidden"
+                role="status"
+                aria-live="polite"
             >
                 Loading network activity...
             </div>
@@ -151,7 +194,9 @@
             <div
                 id="errorState"
                 class="message-state error-state hidden"
+                role="alert"
             >
+
                 <p>
                     Unable to load network activity.
                 </p>
@@ -162,6 +207,7 @@
                 >
                     Retry
                 </button>
+
             </div>
 
 
@@ -169,67 +215,85 @@
             <div
                 id="emptyState"
                 class="message-state hidden"
+                role="status"
             >
                 No network activity recorded yet.
             </div>
 
 
-            <!-- Events inserted here -->
+            <!-- Dynamically Rendered Activity Cards -->
             <div
                 id="activityList"
                 aria-live="polite"
+                aria-label="Recent network events"
             ></div>
 
         </section>
 
 
         <!-- System Status -->
-        <section class="system-section">
+        <section
+            class="system-section"
+            aria-labelledby="systemStatusHeading"
+        >
 
-            <h2>
+            <h2 id="systemStatusHeading">
                 System Status
             </h2>
 
             <div class="system-card">
 
-                <div class="system-icon">
+                <div
+                    class="system-icon"
+                    aria-hidden="true"
+                >
                     🖥
                 </div>
 
                 <div class="system-info">
 
+                    <!-- Backend Connection -->
                     <div class="system-row">
+
                         <span>
                             Backend Connection
                         </span>
 
                         <strong
                             id="backendStatus"
-                            class="connected"
                             aria-live="polite"
                         >
                             Demo Mode
                         </strong>
+
                     </div>
 
+
+                    <!-- Last Event Update -->
                     <div class="system-row">
+
                         <span>
-                            Last Update
+                            Last Event
                         </span>
 
                         <strong id="lastUpdate">
                             --
                         </strong>
+
                     </div>
 
+
+                    <!-- Network Scan Status -->
                     <div class="system-row">
+
                         <span>
                             Network Scan
                         </span>
 
                         <strong id="scanStatus">
-                            Running
+                            Simulated
                         </strong>
+
                     </div>
 
                 </div>
@@ -239,51 +303,92 @@
         </section>
 
 
-        <!-- Navigation -->
+        <!-- Bottom Navigation -->
         <nav
             class="bottom-nav"
             aria-label="Main navigation"
         >
 
+            <!-- Home -->
             <a
                 href="space.html"
                 class="nav-item active"
+                aria-current="page"
             >
-                <span>⌂</span>
-                <small>Home</small>
+
+                <span aria-hidden="true">
+                    ⌂
+                </span>
+
+                <small>
+                    Home
+                </small>
+
             </a>
 
+
+            <!-- Events -->
             <a
                 href="events.html"
                 class="nav-item"
             >
-                <span>☷</span>
-                <small>Events</small>
+
+                <span aria-hidden="true">
+                    ☷
+                </span>
+
+                <small>
+                    Events
+                </small>
+
             </a>
 
+
+            <!-- Alerts - Future Sprint -->
             <button
                 type="button"
                 class="nav-item disabled"
-                aria-label="Alerts planned for later sprint"
+                aria-label="Alerts planned for a later sprint"
+                disabled
             >
-                <span>♢</span>
-                <small>Alerts</small>
+
+                <span aria-hidden="true">
+                    ♢
+                </span>
+
+                <small>
+                    Alerts
+                </small>
+
             </button>
 
+
+            <!-- Settings - Future Sprint -->
             <button
                 type="button"
                 class="nav-item disabled"
-                aria-label="Settings planned for later sprint"
+                aria-label="Settings planned for a later sprint"
+                disabled
             >
-                <span>⚙</span>
-                <small>Settings</small>
+
+                <span aria-hidden="true">
+                    ⚙
+                </span>
+
+                <small>
+                    Settings
+                </small>
+
             </button>
 
         </nav>
 
     </main>
 
+
+    <!-- Dashboard JavaScript -->
     <script src="script.js"></script>
 
 </body>
+
 </html>
