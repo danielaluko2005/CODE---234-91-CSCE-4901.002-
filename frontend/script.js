@@ -1,6 +1,7 @@
 
 const USE_BACKEND = false;
 
+// Simulated events used until backend integration is available.
 const networkEvents = [
     {
         id: 1,
@@ -71,22 +72,43 @@ function formatTime(timestamp) {
     });
 }
 
+// Sprint 2: Show both date and time for the latest event.
+function formatDateTime(timestamp) {
+    const date = new Date(timestamp);
+
+    if (Number.isNaN(date.getTime())) {
+        return "--";
+    }
+
+    return date.toLocaleString([], {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+        hour: "numeric",
+        minute: "2-digit"
+    });
+}
+
 function createActivityCard(event) {
     return `
         <article class="activity-card">
             <div class="device-icon">
                 ${getDeviceIcon(event.deviceType)}
             </div>
+
             <div class="activity-details">
                 <div class="activity-title-row">
                     <h3>${event.deviceName}</h3>
+
                     <span class="activity-time">
                         ${formatTime(event.timestamp)}
                     </span>
                 </div>
+
                 <p class="network-route">
                     ${event.sourceIp} → ${event.destinationIp}
                 </p>
+
                 <p class="network-details">
                     ${event.protocol}
                     • Port ${event.port}
@@ -102,9 +124,8 @@ function renderRecentActivity(events) {
     list.innerHTML = "";
 
     const recentEvents = [...events]
-        .sort(
-            (a, b) =>
-                new Date(b.timestamp) - new Date(a.timestamp)
+        .sort((a, b) =>
+            new Date(b.timestamp) - new Date(a.timestamp)
         )
         .slice(0, 4);
 
@@ -144,7 +165,7 @@ function updateLastUpdate(events) {
             : latest
     );
 
-    element.textContent = formatTime(newest.timestamp);
+    element.textContent = formatDateTime(newest.timestamp);
 }
 
 function hideAllStates() {
@@ -243,13 +264,11 @@ function normalizeNetworkEvents(data) {
     throw new Error("Invalid network event data");
 }
 
-// Sprint 2: Reset dashboard counts and state for empty/invalid data.
 function updateDashboard(events) {
     if (!Array.isArray(events)) {
         updateEventCount([]);
         updateDeviceCount([]);
         updateLastUpdate([]);
-
         showError();
         return;
     }
@@ -258,7 +277,6 @@ function updateDashboard(events) {
         updateEventCount([]);
         updateDeviceCount([]);
         updateLastUpdate([]);
-
         showEmpty();
         return;
     }
@@ -293,6 +311,7 @@ async function loadDashboard() {
         setDashboardMode(true);
         updateDashboard(events);
     } catch (error) {
+        console.warn("Backend unavailable:", error);
         setDashboardMode(false);
         updateDashboard(networkEvents);
     }
