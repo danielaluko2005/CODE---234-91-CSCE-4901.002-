@@ -1,7 +1,6 @@
 
 const USE_BACKEND = false;
 
-// Simulated events used until backend integration is available.
 const networkEvents = [
     {
         id: 1,
@@ -72,7 +71,6 @@ function formatTime(timestamp) {
     });
 }
 
-// Sprint 2: Show both date and time for the latest event.
 function formatDateTime(timestamp) {
     const date = new Date(timestamp);
 
@@ -89,7 +87,26 @@ function formatDateTime(timestamp) {
     });
 }
 
+// Sprint 2: Escape event values before inserting into HTML.
+function escapeHtml(value) {
+    const text = value == null ? "--" : String(value);
+
+    return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+}
+
 function createActivityCard(event) {
+    const deviceName = escapeHtml(event.deviceName);
+    const sourceIp = escapeHtml(event.sourceIp);
+    const destinationIp = escapeHtml(event.destinationIp);
+    const protocol = escapeHtml(event.protocol);
+    const port = escapeHtml(event.port);
+    const activity = escapeHtml(event.activity);
+
     return `
         <article class="activity-card">
             <div class="device-icon">
@@ -98,7 +115,7 @@ function createActivityCard(event) {
 
             <div class="activity-details">
                 <div class="activity-title-row">
-                    <h3>${event.deviceName}</h3>
+                    <h3>${deviceName}</h3>
 
                     <span class="activity-time">
                         ${formatTime(event.timestamp)}
@@ -106,13 +123,13 @@ function createActivityCard(event) {
                 </div>
 
                 <p class="network-route">
-                    ${event.sourceIp} → ${event.destinationIp}
+                    ${sourceIp} → ${destinationIp}
                 </p>
 
                 <p class="network-details">
-                    ${event.protocol}
-                    • Port ${event.port}
-                    • ${event.activity}
+                    ${protocol}
+                    • Port ${port}
+                    • ${activity}
                 </p>
             </div>
         </article>
