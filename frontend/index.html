@@ -1,7 +1,6 @@
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta
@@ -9,235 +8,84 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>DOME ALERT - Dashboard Tests</title>
-
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 850px;
-            margin: 30px auto;
-            padding: 20px;
-            line-height: 1.6;
-        }
-
-        h1 {
-            margin-bottom: 5px;
-        }
-
-        .description {
-            color: #555;
-        }
-
-        button {
-            background: #2357b7;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            padding: 12px 20px;
-            cursor: pointer;
-            font-size: 15px;
-        }
-
-        button:hover {
-            background: #173f8c;
-        }
-
-        .result {
-            margin: 8px 0;
-            padding: 10px;
-            border-radius: 5px;
-        }
-
-        .pass {
-            background: #e6f5e9;
-            color: #14652a;
-        }
-
-        .fail {
-            background: #fde7e7;
-            color: #9a1818;
-        }
-
-        iframe {
-            display: block;
-            width: 100%;
-            height: 420px;
-            margin-top: 20px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-        }
-    </style>
+    <title>DOME ALERT</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-    <h1>DOME ALERT - Frontend Tests</h1>
+    <header>
+        <h1>DOME ALERT</h1>
+        <p>Accessible Smart Home Security Monitoring</p>
+    </header>
 
-    <p class="description">
-        Sprint 2 dashboard tests using simulated network data.
-    </p>
+    <nav aria-label="Main navigation">
+        <a href="space.html">Home Dashboard</a>
+        <a href="events.html">Network Events</a>
+        <a href="#traffic">Network Traffic</a>
+        <a href="#alerts">Security Alerts</a>
+        <a href="#incidents">Incidents</a>
+    </nav>
 
-    <p>
-        These tests check dashboard counts, monitoring status,
-        event rendering, empty states, error handling,
-        and HTML escaping.
-    </p>
+    <main id="dashboard">
 
-    <button id="runTests" type="button">
-        Run Dashboard Tests
-    </button>
+        <section class="card">
+            <h2>Network Status</h2>
+            <p>Network monitoring has not started yet.</p>
+        </section>
 
-    <h2>Test Results</h2>
+        <section class="card" id="traffic">
+            <h2>Network Traffic</h2>
 
-    <div id="results" aria-live="polite">
-        Click the button to begin testing.
-    </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Source IP</th>
+                        <th>Destination IP</th>
+                        <th>Port</th>
+                        <th>Protocol</th>
+                        <th>Activity</th>
+                    </tr>
+                </thead>
 
-    <h2>Dashboard Preview</h2>
+                <tbody>
+                    <tr>
+                        <td colspan="6">
+                            No network events recorded yet.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
 
-    <iframe
-        id="dashboardFrame"
-        src="space.html"
-        title="DOME ALERT Dashboard Preview"
-    ></iframe>
+        <section class="card" id="alerts">
+            <h2>Security Alerts</h2>
 
-    <script>
-        const runButton =
-            document.getElementById("runTests");
+            <div id="alertArea" aria-live="polite">
+                <p>No security alerts detected.</p>
+            </div>
+        </section>
 
-        const results =
-            document.getElementById("results");
+        <section class="card">
+            <h2>Network Statistics</h2>
 
-        const frame =
-            document.getElementById("dashboardFrame");
+            <p>Total Events: 0</p>
+            <p>Security Alerts: 0</p>
+            <p>Detected Incidents: 0</p>
+        </section>
 
-        function addResult(name, passed) {
-            const item = document.createElement("div");
+        <section class="card" id="incidents">
+            <h2>Incident History</h2>
 
-            item.className =
-                "result " + (passed ? "pass" : "fail");
+            <p>No incidents have been recorded.</p>
+        </section>
 
-            item.textContent =
-                (passed ? "PASS: " : "FAIL: ") + name;
+    </main>
 
-            results.appendChild(item);
-        }
-
-        runButton.addEventListener("click", () => {
-            results.innerHTML = "";
-            runButton.disabled = true;
-
-            try {
-                const app = frame.contentWindow;
-                const doc = frame.contentDocument;
-
-                if (!app || !doc ||
-                    typeof app.updateDashboard !== "function") {
-                    throw new Error(
-                        "Dashboard is not loaded yet."
-                    );
-                }
-
-                // Test 1: Simulated monitoring status
-                addResult(
-                    "Monitoring displays Demo Mode",
-                    doc.getElementById("monitoringStatus")
-                        .textContent.trim() === "Demo Mode"
-                );
-
-                // Test 2: Event count
-                app.updateDashboard(app.networkEvents);
-
-                addResult(
-                    "Network event count is 4",
-                    doc.getElementById("eventCount")
-                        .textContent.trim() === "4"
-                );
-
-                // Test 3: Connected devices
-                addResult(
-                    "Connected device count is 4",
-                    doc.getElementById("deviceCount")
-                        .textContent.trim() === "4"
-                );
-
-                // Test 4: Recent event cards
-                addResult(
-                    "Four activity cards are displayed",
-                    doc.querySelectorAll(".activity-card")
-                        .length === 4
-                );
-
-                // Test 5: Latest event includes date
-                addResult(
-                    "Latest event shows a full date",
-                    doc.getElementById("lastUpdate")
-                        .textContent.includes("2026")
-                );
-
-                // Test 6: Empty event state
-                app.updateDashboard([]);
-
-                addResult(
-                    "Empty event count is zero",
-                    doc.getElementById("eventCount")
-                        .textContent.trim() === "0"
-                );
-
-                addResult(
-                    "Empty message is visible",
-                    !doc.getElementById("emptyState")
-                        .classList.contains("hidden")
-                );
-
-                // Test 7: Invalid data error
-                app.updateDashboard(null);
-
-                addResult(
-                    "Invalid data displays error",
-                    !doc.getElementById("errorState")
-                        .classList.contains("hidden")
-                );
-
-                addResult(
-                    "Error clears activity cards",
-                    doc.querySelectorAll(".activity-card")
-                        .length === 0
-                );
-
-                // Test 8: Escape unsafe event text
-                const unsafeEvent = {
-                    ...app.networkEvents[0],
-                    deviceName: "<b>Test Device</b>"
-                };
-
-                app.updateDashboard([unsafeEvent]);
-
-                const heading =
-                    doc.querySelector(".activity-card h3");
-
-                addResult(
-                    "HTML-like text displays safely",
-                    heading !== null &&
-                    heading.textContent ===
-                        "<b>Test Device</b>" &&
-                    heading.querySelector("b") === null
-                );
-
-                // Restore the normal demo dashboard
-                app.loadDashboard();
-
-            } catch (error) {
-                addResult(
-                    "Test runner: " + error.message,
-                    false
-                );
-            } finally {
-                runButton.disabled = false;
-            }
-        });
-    </script>
+    <footer>
+        <p>Team Code 234-91</p>
+    </footer>
 
 </body>
-
 </html>
