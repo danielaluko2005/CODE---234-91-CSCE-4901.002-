@@ -13,7 +13,7 @@
 
 .filter-row {
     display: grid;
-    grid-template-columns: 1.5fr 1fr 1fr;
+    grid-template-columns: 1.5fr repeat(3, 1fr);
     gap: 12px;
 }
 
@@ -190,6 +190,36 @@
 
 .events-log-table tbody tr.selected {
     background: #eaf2ff;
+}
+
+/* Device name in each table row is a <button> so keyboard users can select rows */
+.row-select-btn {
+    min-height: 24px;
+    padding: 2px 4px;
+    background: none;
+    border: 0;
+    border-radius: 6px;
+    color: var(--dashboard-text);
+    font: inherit;
+    font-weight: 600;
+    text-align: left;
+    cursor: pointer;
+}
+
+.row-select-btn:hover:not(:disabled) {
+    background: none;
+    text-decoration: underline;
+}
+
+.row-select-btn:focus-visible {
+    outline: 3px solid var(--dashboard-primary);
+    outline-offset: 2px;
+}
+
+@media (max-width: 720px) {
+    .filter-row {
+        grid-template-columns: 1fr 1fr;
+    }
 }
 
 @media (max-width: 600px) {

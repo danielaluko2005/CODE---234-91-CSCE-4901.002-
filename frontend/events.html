@@ -28,7 +28,7 @@
                 ↻
             </button>
         </header>
-
+    
         <!-- Connection & Summary Status Bar -->
         <section class="status-card" aria-label="Event Log Connection Status">
             <div class="status-icon" aria-hidden="true">📋</div>
@@ -93,6 +93,17 @@
                         <option value="threat">Threat / Alert (Red)</option>
                     </select>
                 </div>
+                <div class="filter-field">
+                    <label for="eventTypeFilterSelect">Event Type</label>
+                    <select id="eventTypeFilterSelect">
+                        <option value="ALL">All Event Types</option>
+                        <option value="traffic">Network traffic</option>
+                        <option value="sensor_reading">Sensor reading</option>
+                        <option value="status">Status message</option>
+                        <option value="command">Command</option>
+                        <option value="login">Login activity</option>
+                    </select>
+                </div>
             </div>
 
             <div class="filter-actions">
@@ -153,6 +164,7 @@
                         <thead>
                             <tr>
                                 <th scope="col">Device</th>
+                                <th scope="col">Event Type</th>
                                 <th scope="col">Source IP</th>
                                 <th scope="col">Destination IP</th>
                                 <th scope="col">Port</th>
@@ -163,7 +175,7 @@
                         </thead>
                         <tbody id="eventsTableBody">
                             <tr>
-                                <td colspan="7">Loading events...</td>
+                                <td colspan="8">Loading events...</td>
                             </tr>
                         </tbody>
                     </table>
