@@ -1,12 +1,14 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta
         name="viewport"
         content="width=device-width, initial-scale=1.0"
     >
+
     <title>DOME ALERT - Regression Tests</title>
 
     <style>
@@ -67,7 +69,7 @@
     <h1>DOME ALERT - Sprint 2 Tests</h1>
 
     <p>
-        Automated frontend regression tests.
+        Automated regression tests for the Home Dashboard.
         These tests use simulated network events.
     </p>
 
@@ -75,7 +77,9 @@
         Run All Tests
     </button>
 
-    <h2 id="summary">Tests not started</h2>
+    <h2 id="summary">
+        Tests not started
+    </h2>
 
     <div id="results" aria-live="polite"></div>
 
@@ -105,10 +109,9 @@
 
         async function reloadDashboard() {
             await new Promise((resolve, reject) => {
-                const timeout = setTimeout(
-                    () => reject(new Error("Load timed out")),
-                    5000
-                );
+                const timeout = setTimeout(() => {
+                    reject(new Error("Dashboard load timed out"));
+                }, 5000);
 
                 frame.onload = () => {
                     clearTimeout(timeout);
@@ -119,7 +122,6 @@
                     "../space.html?test=" + Date.now();
             });
 
-            // Allow the dashboard's demo data to load.
             await wait(650);
         }
 
@@ -144,11 +146,33 @@
             let failed = 0;
             let pending = 0;
 
-            for (let number = 1; number <= 9; number++) {
+            for (let number = 1; number <= 18; number++) {
                 const filename =
                     `./test-${String(number).padStart(2, "0")}.js`;
 
                 try {
+                    const response = await fetch(filename, {
+                        cache: "no-store"
+                    });
+
+                    if (response.status === 404) {
+                        pending++;
+
+                        displayResult(
+                            `Test ${number}`,
+                            "PENDING",
+                            "Test file not yet created"
+                        );
+
+                        continue;
+                    }
+
+                    if (!response.ok) {
+                        throw new Error(
+                            `HTTP ${response.status}`
+                        );
+                    }
+
                     const module = await import(filename);
 
                     await reloadDashboard();
@@ -165,25 +189,15 @@
                         failed++;
                         displayResult(module.name, "FAIL");
                     }
+
                 } catch (error) {
-                    if (
-                        error instanceof TypeError &&
-                        /module|fetch|load/i.test(error.message)
-                    ) {
-                        pending++;
-                        displayResult(
-                            `Test ${number}`,
-                            "PENDING",
-                            "Test file may not be added yet"
-                        );
-                    } else {
-                        failed++;
-                        displayResult(
-                            `Test ${number}`,
-                            "FAIL",
-                            error.message
-                        );
-                    }
+                    failed++;
+
+                    displayResult(
+                        `Test ${number}`,
+                        "FAIL",
+                        error.message
+                    );
                 }
             }
 
@@ -193,6 +207,6 @@
             button.disabled = false;
         });
     </script>
+
 </body>
 </html>
-
