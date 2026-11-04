@@ -107,7 +107,7 @@ class SmartDoor(SmartHomeDevice):
     
     def is_working(self):
         super().check_working()
-        if self.locked == true and self.door == true and super().check_working():
+        if self.locked == true and self.door == true and super().check_working() == true:
             return true
         else:
             return false
