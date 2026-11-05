@@ -6,7 +6,7 @@
 <<<<<<< Updated upstream
 =======
 class SmartHomeDevice:
-    def __init__(power=false, connected=false, software=false, status="stable", sound="Beep", sourceip="XXX.XXX.XXX.XXX", destip="XXX.XXX.XXX.XXX", port=8080, working=false, volume=50):
+    def __init__(power=false, connected=false, software=false, status="stable", sound="Beep", volume=50, sourceip="XXX.XXX.XXX.XXX", destip="XXX.XXX.XXX.XXX", port=8080, working=false):
         self.power = power
         self.connected= connected 
         self.software = software
@@ -58,6 +58,21 @@ class SmartHomeDevice:
         else:
             self.working == false
             return false
+
+    def stable_state(self)
+        #newdevice data
+            self.power = true
+            self.connected = true
+            self.software =true
+            self.status = "stable"
+            self.sound = "Beep"
+            self.volume = 50
+            self.sourceip = "192.168.22.100"
+            self.destip = "127.231.94.8"
+            self.port = 22
+            self.working = true
+    
+
     
  
 
@@ -81,11 +96,74 @@ class SmartTherm(SmartHomeDevice):
         print("", self.temprature, "F")
     
     def is_working(self):
-        super().check_working()
-        if self.valid_temp == true and self.stable == true and self.working == true:
+        if self.valid_temp == true and self.check_working() == true:
             return true
         else:
             return false
+    
+    def  stable_thermo(self):
+            self.power = true
+            self.connected = true
+            self.software =true
+            self.status = "stable"
+            self.sound = "Beep"
+            self.volume = 50
+            self.sourceip = "192.168.22.100"
+            self.destip = "127.231.94.8"
+            self.port = 22
+            self.working = true
+            self.temprature = 72
+            self.valid_temp = true
+
+    def unstable_thermo(value):
+        match value:
+            case 1:
+            #device is completely down
+            self.power = false
+            self.connected = false
+            self.software =false
+            self.status = "unstable"
+            self.sound = None
+            self.volume = 0
+            self.sourceip = "XXX.XXX.XXX.XXX"
+            self.destip = "XXX.XXX.XXX.XXX"
+            self.port = 3000
+            self.working = false
+            self.temprature = 0
+            self.valid_temp = false
+
+
+            case 2:
+            #device is working but not connected to the network
+            self.power = true
+            self.connected = false
+            self.software =true
+            self.status = "unstable"
+            self.sound = None
+            self.volume = 0
+            self.sourceip = "XXX.XXX.XXX.XXX"
+            self.destip = "XXX.XXX.XXX.XXX"
+            self.port = 80
+            self.working = false
+            self.temprature = 72
+            self.valid_temp = false
+ 
+
+            case 3:
+            #device is working but temperature is not valid
+            self.power = true
+            self.connected = true
+            self.software =false
+            self.status = "unstable"
+            self.sound = None
+            self.volume = 0
+            self.sourceip = "192.168.22.17"
+            self.destip = "127.231.93.10"
+            self.port = 3000
+            self.working = false
+            self.temprature = 99
+            self.valid_temp = false
+
 
 class SmartDoor(SmartHomeDevice):
     def __init__(self, power=false, connected=false, software=false, status="stable", sound="Beep", sourceip="XXX.XXX.XXX.XXX", destip="XXX.XXX.XXX.XXX", port=8080, working=false, volume=50)
@@ -111,7 +189,72 @@ class SmartDoor(SmartHomeDevice):
             return true
         else:
             return false
-    
+
+    #method to set a stable state for the smart door 
+    def  stable_door(self):
+            self.power = true
+            self.connected = true
+            self.software =true
+            self.status = "stable"
+            self.sound = "Beep"
+            self.volume = 50
+            self.sourceip = "192.168.22.100"
+            self.destip = "127.231.94.8"
+            self.port = 22
+            self.working = true
+            self.locked = true
+            self.door = true
+
+     #method to set a unstable state for the smart door
+     def unstable_door(value):
+        match value:
+            case 1:
+            #device is completely down
+            self.power = false
+            self.connected = false
+            self.software =false
+            self.status = "unstable"
+            self.sound = None
+            self.volume = 0
+            self.sourceip = "XXX.XXX.XXX.XXX"
+            self.destip = "XXX.XXX.XXX.XXX"
+            self.port = 3000
+            self.working = false
+            self.locked = false
+            self.door = false
+
+
+            case 2:
+            #device is working but not connected to the network
+            self.power = true
+            self.connected = false
+            self.software =true
+            self.status = "unstable"
+            self.sound = None
+            self.volume = 0
+            self.sourceip = "XXX.XXX.XXX.XXX"
+            self.destip = "XXX.XXX.XXX.XXX"
+            self.port = 88
+            self.working = false
+            self.locked = true
+            self.door = false
+
+
+            case 3:
+            #device is working but door is open and unlocked
+            self.power = true
+            self.connected = true
+            self.software =false
+            self.status = "unstable"
+            self.sound = None
+            self.volume = 0
+            self.sourceip = "192.168.22.17"
+            self.destip = "127.231.93.10"
+            self.port = 3000
+            self.working = false
+            self.locked = false
+            self.door = false
+
     # def lock_door(self):
     #     if self.locked == false:
     #         print("---Security Alert---")
