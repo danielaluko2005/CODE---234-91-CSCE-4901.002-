@@ -115,7 +115,7 @@ class SmartTherm(SmartHomeDevice):
             self.temprature = 72
             self.valid_temp = true
 
-    def unstable_thermo(value):
+    def unstable_thermo(self, value):
         match value:
             case 1:
             #device is completely down
@@ -206,7 +206,7 @@ class SmartDoor(SmartHomeDevice):
             self.door = true
 
      #method to set a unstable state for the smart door
-     def unstable_door(value):
+     def unstable_door(self, value):
         match value:
             case 1:
             #device is completely down
@@ -304,7 +304,78 @@ class SmartCamera(SmartHomeDevice):
             return true
         else:
             return false 
+def  stable_cam(self):
+            self.power = true
+            self.connected = true
+            self.software =true
+            self.status = "stable"
+            self.sound = "Beep"
+            self.volume = 50
+            self.sourceip = "192.168.22.100"
+            self.destip = "127.231.94.8"
+            self.port = 22
+            self.working = true
+            self.capture = true
+            self.motion = true
+            self.focused = true 
+            self.covered = true
 
+     #method to set a unstable state for the smart door
+     def unstable_cam(self, value):
+        match value:
+            case 1:
+            #device is completely down
+            self.power = false
+            self.connected = false
+            self.software =false
+            self.status = "unstable"
+            self.sound = None
+            self.volume = 0
+            self.sourceip = "XXX.XXX.XXX.XXX"
+            self.destip = "XXX.XXX.XXX.XXX"
+            self.port = 3000
+            self.working = false
+            self.capture = false
+            self.motion = false
+            self.focused = false 
+            self.covered = false
+
+            case 2:
+            #device is working but not connected to the network
+            self.power = true
+            self.connected = false
+            self.software =true
+            self.status = "unstable"
+            self.sound = None
+            self.volume = 0
+            self.sourceip = "XXX.XXX.XXX.XXX"
+            self.destip = "XXX.XXX.XXX.XXX"
+            self.port = 88
+            self.working = false
+            self.working = true
+            self.capture = true
+            self.motion = true
+            self.focused = true 
+            self.covered = true
+
+
+            case 3:
+            #device is working but not capturing anything 
+            self.power = true
+            self.connected = true
+            self.software =false
+            self.status = "unstable"
+            self.sound = None
+            self.volume = 0
+            self.sourceip = "192.168.22.17"
+            self.destip = "127.231.93.10"
+            self.port = 3000
+            self.working = false
+            self.working = false
+            self.capture = false
+            self.motion = false
+            self.focused = false 
+            self.covered = false
     # def capture(self):
     #     if self.is_capturing() == true:
     #         print("Starting live capture...")
