@@ -72,6 +72,49 @@ class SmartHomeDevice:
             self.port = 22
             self.working = true
     
+    def unstable_state(self, value):
+         match value:
+            case 1:
+            #device is completely down
+            self.power = false
+            self.connected = false
+            self.software =false
+            self.status = "unstable"
+            self.sound = None
+            self.volume = 0
+            self.sourceip = "XXX.XXX.XXX.XXX"
+            self.destip = "XXX.XXX.XXX.XXX"
+            self.port = 3000
+            self.working = false
+
+
+            case 2:
+            #device is working but not connected to the network
+            self.power = true
+            self.connected = false
+            self.software =true
+            self.status = "unstable"
+            self.sound = None
+            self.volume = 0
+            self.sourceip = "XXX.XXX.XXX.XXX"
+            self.destip = "XXX.XXX.XXX.XXX"
+            self.port = 80
+            self.working = true
+            
+
+            case 3:
+            #device is not working but it is connected to the network
+            self.power = true
+            self.connected = true
+            self.software =false
+            self.status = "unstable"
+            self.sound = None
+            self.volume = 0
+            self.sourceip = "192.168.22.31"
+            self.destip = "127.231.93.24"
+            self.port = 3000
+            self.working = false
+            
 
     
  
@@ -248,8 +291,8 @@ class SmartDoor(SmartHomeDevice):
             self.status = "unstable"
             self.sound = None
             self.volume = 0
-            self.sourceip = "192.168.22.17"
-            self.destip = "127.231.93.10"
+            self.sourceip = "192.168.22.29"
+            self.destip = "127.231.93.4"
             self.port = 3000
             self.working = false
             self.locked = false
