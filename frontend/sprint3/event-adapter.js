@@ -40,9 +40,16 @@ function normalizeEvent(raw, index = 0) {
 }
 
 function normalizeEvents(payload) {
-    const records = Array.isArray(payload) ? payload : payload?.events;
+    const records = Array.isArray(payload)
+        ? payload
+        : Array.isArray(payload?.events)
+            ? payload.events
+            : payload?.data?.events;
     if (!Array.isArray(records)) {
         throw new TypeError("Expected an event array or { events: [...] }");
+    }
+    if (records.length > 10000) {
+        throw new RangeError("Event response contains more than 10,000 records");
     }
     return records.map((event, index) => normalizeEvent(event, index));
 }
