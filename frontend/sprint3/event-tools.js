@@ -17,4 +17,13 @@ function uniqueEvents(events) {
 }
 
 
-export { eventKey, uniqueEvents };
+function newestFirst(events) {
+    return [...events].sort((a, b) => {
+        const aTime = new Date(a.timestamp || 0).getTime() || 0;
+        const bTime = new Date(b.timestamp || 0).getTime() || 0;
+        return bTime - aTime;
+    });
+}
+
+
+export { eventKey, uniqueEvents, newestFirst };
