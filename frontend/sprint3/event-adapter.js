@@ -12,13 +12,13 @@ function normalizeEvent(raw, index = 0) {
 
     return {
         id: firstValue(raw.id, index + 1),
-        deviceName: String(firstValue(raw.deviceName, raw.device_name, "Unknown device")),
+        deviceName: String(firstValue(raw.deviceName, raw.device_name, raw.device, raw.name, "Unknown device")),
         deviceType: String(firstValue(raw.deviceType, raw.device_type, "device")),
-        sourceIp: String(firstValue(raw.sourceIp, raw.source_ip, "--")),
-        destinationIp: String(firstValue(raw.destinationIp, raw.destination_ip, "--")),
+        sourceIp: String(firstValue(raw.sourceIp, raw.source_ip, raw.src_ip, "--")),
+        destinationIp: String(firstValue(raw.destinationIp, raw.destination_ip, raw.dst_ip, "--")),
         protocol: String(firstValue(raw.protocol, "--")),
-        port: firstValue(raw.port, raw.destination_port, null),
-        activity: String(firstValue(raw.activity, "Network event")),
+        port: firstValue(raw.port, raw.destination_port, raw.dst_port, null),
+        activity: String(firstValue(raw.activity, raw.description, raw.message, "Network event")),
         timestamp: firstValue(raw.timestamp, null)
     };
 }
