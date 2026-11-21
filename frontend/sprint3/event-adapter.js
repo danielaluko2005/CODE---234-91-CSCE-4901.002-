@@ -13,6 +13,12 @@ function knownValue(value, known, fallback) {
     return known.has(candidate) ? candidate : fallback;
 }
 
+function validTimestamp(value) {
+    if (value === null || value === undefined || value === "") return null;
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? null : date.toISOString();
+}
+
 function normalizeEvent(raw, index = 0) {
     if (!raw || typeof raw !== "object" || Array.isArray(raw)) {
         throw new TypeError("Each event must be an object");
@@ -27,7 +33,7 @@ function normalizeEvent(raw, index = 0) {
         protocol: String(firstValue(raw.protocol, "--")),
         port: firstValue(raw.port, raw.destination_port, raw.dst_port, null),
         activity: String(firstValue(raw.activity, raw.description, raw.message, "Network event")),
-        timestamp: firstValue(raw.timestamp, null),
+        timestamp: validTimestamp(firstValue(raw.timestamp, raw.created_at, raw.time)),
         eventType: knownValue(firstValue(raw.eventType, raw.event_type), VALID_TYPES, "traffic"),
         severity: knownValue(raw.severity, VALID_SEVERITIES, "normal")
     };
@@ -41,4 +47,4 @@ function normalizeEvents(payload) {
     return records.map((event, index) => normalizeEvent(event, index));
 }
 
-export { normalizeEvent, normalizeEvents, VALID_SEVERITIES, VALID_TYPES };
+export { normalizeEvent, normalizeEvents, validTimestamp, VALID_SEVERITIES, VALID_TYPES };
