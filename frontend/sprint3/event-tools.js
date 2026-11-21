@@ -26,4 +26,15 @@ function newestFirst(events) {
 }
 
 
-export { eventKey, uniqueEvents, newestFirst };
+function eventSummary(events) {
+    const deviceNames = new Set(events.map(event => event.deviceName).filter(Boolean));
+    const times = events.map(event => Date.parse(event.timestamp)).filter(Number.isFinite);
+    return {
+        eventCount: events.length,
+        deviceCount: deviceNames.size,
+        lastEventTime: times.length ? new Date(Math.max(...times)).toISOString() : null
+    };
+}
+
+
+export { eventKey, uniqueEvents, newestFirst, eventSummary };
