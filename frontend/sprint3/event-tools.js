@@ -37,4 +37,23 @@ function eventSummary(events) {
 }
 
 
-export { eventKey, uniqueEvents, newestFirst, eventSummary };
+function countBySeverity(events) {
+    const counts = { normal: 0, unusual: 0, threat: 0 };
+    for (const event of events) {
+        if (Object.hasOwn(counts, event.severity)) counts[event.severity]++;
+    }
+    return counts;
+}
+
+function filterEvents(events, { text = "", severity = "all" } = {}) {
+    const needle = text.trim().toLowerCase();
+    return events.filter(event => {
+        if (severity !== "all" && event.severity !== severity) return false;
+        const haystack = [event.deviceName, event.activity, event.sourceIp,
+            event.destinationIp, event.protocol].join(" ").toLowerCase();
+        return !needle || haystack.includes(needle);
+    });
+}
+
+
+export { eventKey, uniqueEvents, newestFirst, eventSummary, countBySeverity, filterEvents };
