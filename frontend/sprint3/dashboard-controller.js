@@ -1,7 +1,7 @@
 import { loadSource } from "./source-service.js";
 
-// The original script.js still owns the Sprint 2 dashboard and its regression tests.
-// Sprint 3 only takes control when the user changes the data source.
+// Sprint 2 keeps its original dashboard functions.
+// Sprint 3 manages the additional data-source controls.
 
 const sourceSelect = document.getElementById("sprint3Source");
 const refreshButton = document.getElementById("sprint3Refresh");
@@ -23,8 +23,7 @@ function showMockMode() {
     document.getElementById("backendStatus").textContent = "Not connected (mock)";
     document.getElementById("scanStatus").textContent = "Simulated";
     document.getElementById("monitoringIndicator").setAttribute(
-        "aria-label",
-        "Simulated API data"
+        "aria-label", "Simulated API data"
     );
 }
 
@@ -33,13 +32,14 @@ async function refreshSource() {
     const number = ++requestNumber;
 
     if (source === "demo") {
+        refreshButton.disabled = false;
         setDashboardMode(false);
         updateMessage("Currently showing Sprint 2 demo data.");
         loadDashboard();
         return;
     }
 
-    // Live mode is opt-in. A failed API call should not silently show fake data.
+    refreshButton.disabled = true;
     showLoading();
 
     updateMessage(
@@ -86,13 +86,16 @@ async function refreshSource() {
         );
 
         console.warn("Sprint 3 event request failed:", error);
+    } finally {
+        if (number === requestNumber) {
+            refreshButton.disabled = false;
+        }
     }
 }
 
 sourceSelect.addEventListener("change", refreshSource);
 refreshButton.addEventListener("click", refreshSource);
 
-// Retry the selected source instead of returning to the Sprint 2 demo.
 document.getElementById("retryButton").addEventListener(
     "click",
     event => {
