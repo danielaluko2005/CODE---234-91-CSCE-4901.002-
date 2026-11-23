@@ -1,3 +1,4 @@
+
 # CODE---234-91-CSCE-4901.002-
 
 # 🛡️ Real-Time Network Intrusion Detection & Anomaly Monitoring System
@@ -300,3 +301,132 @@ The team will use controlled experiments to compare the system's behavior under 
 This project is developed for educational purposes as part of a university capstone project.
 
 All cybersecurity testing will be performed in controlled environments on systems that the team is authorized to access. The project is not intended to be used for unauthorized network scanning, monitoring, or attacks.
+
+## 🚀 Sprint 3 — Frontend Development & Integration Progress
+
+The team has continued developing DOME ALERT through the implementation of the Home Dashboard, Network Events page, backend device monitoring components, and frontend testing.
+
+The original development plan above represents the initial project proposal. The current frontend prototype is being developed using HTML, CSS, and JavaScript, while the backend work is being developed in Python.
+
+### 🖥️ Home Dashboard Development
+
+The Home Dashboard provides a monitoring interface for viewing connected-device information and recent network events.
+
+The current implementation includes:
+
+* 📡 Monitoring status and backend connection indicators
+* 📱 Connected-device and network event counts
+* 🌐 Source and destination IP address information
+* 🔍 Network protocols, ports, and event activity
+* 🕒 Event timestamps and recent activity
+* ⚠️ Loading, empty, and error states
+* 🔄 Retry functionality for failed data requests
+* 🛡️ Safe rendering of event information
+* 📱 Responsive layout and accessible interface elements
+
+The dashboard initially uses simulated network events while backend integration is being developed.
+
+### 🔗 Sprint 3 API Integration Preparation
+
+Sprint 3 focuses on preparing the Home Dashboard to receive backend event data and improving the frontend's data processing and testing.
+
+The following frontend functionality has been implemented:
+
+* Event normalization for different backend field names
+* Validation of event records and timestamps
+* Event type and severity handling
+* Duplicate event removal
+* Sorting of recent events by timestamp
+* Event filtering and device-count calculations
+* API configuration and request handling
+* Request cancellation, timeouts, and HTTP error handling
+* Mock API responses for frontend testing
+* Separate Demo, Mock API, and Live Backend options
+* Manual data refresh and Retry functionality
+* Optional automatic refresh at 15-second intervals
+* Automatic polling suspension when the browser tab is hidden
+* Display of the last successful data refresh time
+
+The frontend supports a simulated API response mode so integration behavior can be tested without requiring a running backend.
+
+The Live Backend option is available for integration testing once the backend API is ready and its endpoints and response format are confirmed.
+
+### 🧪 Frontend Testing
+
+Automated testing has been added to verify the functionality of the dashboard and its data processing.
+
+The available test suites include:
+
+* **Sprint 2 Dashboard Tests:** 18 browser-based regression tests
+* **Sprint 3 Browser Tests:** 21 checks for event normalization, filtering, API responses, and polling
+* **Sprint 3 Node Tests:** 11 tests covering event processing and simulated API responses
+
+The Sprint 2 tests have been run successfully. Sprint 3 browser tests and live backend integration require separate verification in the development environment.
+
+### ⚙️ Running the Frontend
+
+1. Clone or download the repository.
+2. Open the project folder in Visual Studio Code.
+3. Install and enable the Live Server extension.
+4. Open `frontend/space.html` using Live Server.
+5. The Home Dashboard opens with Sprint 2 demo data.
+6. Select Mock API response to test the Sprint 3 frontend data-processing functionality.
+7. Use Refresh Data to reload events.
+8. Use the optional auto-refresh control to test periodic updates.
+
+The Live Backend option requires a functioning backend server and compatible API responses.
+
+### 🧪 Running the Tests
+
+**Sprint 2 Dashboard Tests**
+
+Open the following file using Live Server:
+
+`frontend/tests/index.html`
+
+Click **Run All Tests** to execute the 18 dashboard regression tests.
+
+**Sprint 3 Browser Tests**
+
+Open the following file using Live Server:
+
+`frontend/sprint3/tests/index.html`
+
+Click **Run Sprint 3 Tests** to execute the 21 browser test cases.
+
+**Sprint 3 Node Tests**
+
+From the repository root, run:
+
+```bash
+node --test frontend/sprint3/tests/event-tools.test.mjs frontend/sprint3/tests/api-integration.test.mjs
+```
+
+These tests validate frontend processing and simulated API behavior. Testing against the actual backend must be completed separately.
+
+### 🔌 Backend Integration Requirements
+
+The frontend currently uses the following provisional API configuration:
+
+* Base URL: `http://127.0.0.1:8000`
+* Network events endpoint: `/api/events`
+* System status endpoint: `/api/status`
+
+These endpoints must be confirmed with the backend developers before live integration.
+
+The backend must provide the agreed event response structure and allow requests from the frontend development server.
+
+### 📌 Remaining Sprint 3 Integration Work
+
+The remaining integration tasks include:
+
+* [ ] Confirm backend API endpoints and response fields
+* [ ] Verify the backend starts and runs without errors
+* [ ] Configure CORS for frontend requests
+* [ ] Connect the Home Dashboard to a working backend
+* [ ] Verify device and network event data from backend responses
+* [ ] Test connection errors and recovery with the actual server
+* [ ] Run and record all Sprint 3 test results
+* [ ] Complete end-to-end frontend and backend integration testing
+
+The frontend integration components are prepared, but successful connection to a functioning backend and actual network monitoring have not yet been verified.
