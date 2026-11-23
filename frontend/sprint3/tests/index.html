@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>DOME ALERT Sprint 3 Tests</title>
+    <style>
+        body {
+            max-width: 880px;
+            margin: 24px auto;
+            padding: 0 16px;
+            font: 16px Arial, sans-serif;
+            color: #162033;
+        }
+        button {
+            padding: 12px 18px;
+            background: #1465d8;
+            color: #fff;
+            border: 0;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        li { margin: 10px 0; }
+        .pass { color: #0a7950; }
+        .fail { color: #b42318; }
+        #summary { font-weight: 700; }
+    </style>
+</head>
+<body>
+    <h1>Sprint 3 — Event and API Tests</h1>
+    <p>These tests use simulated responses. They do not prove that a real backend is running.</p>
+
+    <button id="run">Run Sprint 3 Tests</button>
+    <p id="summary">Not run</p>
+    <ol id="results"></ol>
+
+    <script type="module">
+        import { normalizeEvent, normalizeEvents } from "../event-adapter.js";
+        import {
+            uniqueEvents,
+            newestFirst,
+            eventSummary,
+            filterEvents,
+            countBySeverity
+        } from "../event-tools.js";
+        import { getMockPayload } from "../mock-events.js";
+        import { loadSource } from "../source-service.js";
+        import { fetchEventPayload, ApiRequestError } from "../api-client.js";
+        import { createPoller } from "../poller.js";
+
+        const tests = [
+            ["Converts backend device names",
+                () => normalizeEvent({ device_name: "Camera" }).deviceName === "Camera"],
+
+            ["Converts source IP",
+                () => normalizeEvent({ source_ip: "192.168.1.12" }).sourceIp === "192.168.1.12"],
+
+            ["Converts destination port",
+                () => normalizeEvent({ destination_port: 1883 }).port === 1883],
+
+            ["Supports alternate aliases",
+                () => normalizeEvent({ src_ip: "10.0.0.1" }).sourceIp === "10.0.0.1"],
+
+            ["Converts known severity",
+                () => normalizeEvent({ severity: "THREAT" }).severity === "threat"],
+
+            ["Defaults unknown severity",
+                () => normalizeEvent({ severity: "bad" }).severity === "normal"],
+
+            ["Accepts valid event type",
+                () => normalizeEvent({ event_type: "login" }).eventType === "login"],
+
+            ["Ignores invalid timestamp",
+                () => normalizeEvent({ timestamp: "not-a-date" }).timestamp === null],
+
+            ["Accepts array payload",
+                () => normalizeEvents([]).length === 0],
+
+            ["Accepts nested payload",
+                () => normalizeEvents({ data: { events: [{}] } }).length === 1],
+
+            ["Rejects malformed payload",
+                () => {
+                    try {
+                        normalizeEvents(null);
+                        return false;
+                    } catch {
+                        return true;
+                    }
+                }],
+
+            ["Drops duplicate IDs",
+                () => uniqueEvents([{ id: 1 }, { id: 1 }]).length === 1],
+
+            ["Sorts newest events first",
+                () => newestFirst([
+                    { id: 1, timestamp: "2026-01-01" },
+                    { id: 2, timestamp: "2026-02-01" }
+                ])[0].id === 2],
+
+            ["Counts unique devices",
+                () => eventSummary([
+                    { deviceName: "A" },
+                    { deviceName: "A" }
+                ]).deviceCount === 1],
+
+            ["Counts severity categories",
+                () => countBySeverity([{ severity: "unusual" }]).unusual === 1],
+
+            ["Filters event text",
+                () => filterEvents(
+                    [{ deviceName: "Camera", severity: "normal" }],
+                    { text: "cam" }
+                ).length === 1],
+
+            ["Loads mock events without network",
+                async () => (await loadSource("mock")).length === 4],
+
+            ["Mock fixture is copied",
+                () => {
+                    const x = getMockPayload();
+                    x.events.length = 0;
+                    return getMockPayload().events.length === 4;
+                }],
+
+            ["Parses successful API response",
+                async () => (
+                    await fetchEventPayload({
+                        fetchImpl: async () => ({
+                            ok: true,
+                            json: async () => ({ events: [] })
+                        })
+                    })
+                ).events.length === 0],
+
+            ["Rejects HTTP errors",
+                async () => {
+                    try {
+                        await fetchEventPayload({
+                            fetchImpl: async () => ({ ok: false, status: 503 })
+                        });
+                        return false;
+                    } catch (e) {
+                        return e instanceof ApiRequestError && e.status === 503;
+                    }
+                }],
+
+            ["Poller starts and stops",
+                () => {
+                    const p = createPoller(() => {}, 15000);
+                    p.start();
+                    const a = p.running;
+                    p.stop();
+                    return a && !p.running;
+                }]
+        ];
+
+        const button = document.getElementById("run");
+
+        button.addEventListener("click", async () => {
+            button.disabled = true;
+
+            document.getElementById("results").replaceChildren();
+
+            let passed = 0;
+
+            for (const [name, run] of tests) {
+                let ok = false;
+                let error = "";
+
+                try {
+                    ok = Boolean(await run());
+                } catch (e) {
+                    error = e.message;
+                }
+
+                const li = document.createElement("li");
+                li.className = ok ? "pass" : "fail";
+
+                li.textContent =
+                    `${ok ? "PASS" : "FAIL"} — ${name}${error ? ": " + error : ""}`;
+
+                document.getElementById("results").append(li);
+
+                if (ok) passed++;
+            }
+
+            document.getElementById("summary").textContent =
+                `Passed: ${passed} | Failed: ${tests.length - passed} | Total: ${tests.length}`;
+
+            button.disabled = false;
+        });
+    </script>
+</body>
+</html>
