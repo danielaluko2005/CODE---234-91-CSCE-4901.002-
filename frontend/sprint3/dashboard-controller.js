@@ -92,6 +92,18 @@ async function refreshSource() {
 sourceSelect.addEventListener("change", refreshSource);
 refreshButton.addEventListener("click", refreshSource);
 
+// Retry the selected source instead of returning to the Sprint 2 demo.
+document.getElementById("retryButton").addEventListener(
+    "click",
+    event => {
+        if (sourceSelect.value !== "demo") {
+            event.stopImmediatePropagation();
+            refreshSource();
+        }
+    },
+    true
+);
+
 sourceSelect.disabled = true;
 refreshButton.disabled = true;
 
