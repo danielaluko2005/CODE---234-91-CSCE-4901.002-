@@ -1,8 +1,8 @@
 import { loadSource } from "./source-service.js";
 import { createPoller } from "./poller.js";
 
-// Sprint 2 still owns the original dashboard functions.
-// Sprint 3 controls mock and optional backend data loading.
+// Sprint 2 keeps its original dashboard functions.
+// Sprint 3 manages the new data-source controls.
 
 const sourceSelect = document.getElementById("sprint3Source");
 const refreshButton = document.getElementById("sprint3Refresh");
@@ -112,7 +112,6 @@ document.getElementById("retryButton").addEventListener(
     true
 );
 
-// Reuse the polling utility from Commit 18.
 const pollButton = document.getElementById("sprint3Poll");
 
 const poller = createPoller(() => {
@@ -142,6 +141,29 @@ pollButton.addEventListener("click", () => {
 });
 
 sourceSelect.addEventListener("change", stopPolling);
+
+// Stop polling while the browser tab is hidden.
+let resumePolling = false;
+
+document.addEventListener("visibilitychange", () => {
+    if (document.hidden && poller.running) {
+        resumePolling = true;
+        stopPolling();
+    } else if (
+        !document.hidden &&
+        resumePolling &&
+        sourceSelect.value !== "demo"
+    ) {
+        resumePolling = false;
+        poller.start();
+        pollButton.textContent = "Stop auto-refresh";
+        pollButton.setAttribute("aria-pressed", "true");
+        updateMessage("Auto-refresh resumed.");
+    }
+});
+
+// Stop the timer when leaving the page.
+window.addEventListener("pagehide", () => poller.stop());
 
 sourceSelect.disabled = true;
 refreshButton.disabled = true;
