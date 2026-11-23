@@ -33,4 +33,8 @@ async function fetchEventPayload(options = {}) {
     return getJson(EVENTS_PATH, options);
 }
 
-export { ApiRequestError, getJson, fetchEventPayload };
+async function fetchSystemStatus(options = {}) {
+    return getJson(STATUS_PATH, options);
+}
+
+export { ApiRequestError, getJson, fetchEventPayload, fetchSystemStatus };
