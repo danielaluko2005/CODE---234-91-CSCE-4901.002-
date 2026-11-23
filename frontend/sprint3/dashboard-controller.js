@@ -39,6 +39,7 @@ async function refreshSource() {
         return;
     }
 
+    // Live mode is opt-in. A failed API call should not silently show fake data.
     showLoading();
 
     updateMessage(
@@ -59,7 +60,11 @@ async function refreshSource() {
             updateMessage(`Showing ${events.length} simulated API events.`);
         } else {
             setDashboardMode(true);
+
             document.getElementById("scanStatus").textContent = "Not verified";
+            document.getElementById("monitoringMessage").textContent =
+                "Displaying API events; device scan not verified";
+
             updateMessage(`Received ${events.length} events from the backend API.`);
         }
     } catch (error) {
@@ -87,7 +92,6 @@ async function refreshSource() {
 sourceSelect.addEventListener("change", refreshSource);
 refreshButton.addEventListener("click", refreshSource);
 
-// Allow the initial Sprint 2 demo render to finish.
 sourceSelect.disabled = true;
 refreshButton.disabled = true;
 
