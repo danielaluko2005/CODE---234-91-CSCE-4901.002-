@@ -6,6 +6,7 @@
     <title>DOME ALERT</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="sprint3/sprint3.css">
 </head>
 <body>
     <main class="app" aria-label="DOME ALERT Dashboard">
@@ -24,16 +25,38 @@
             <span id="monitoringIndicator" class="status-dot" role="img" aria-label="Demo monitoring status"></span>
         </section>
 
+        <section class="sprint3-panel" aria-labelledby="sprint3Heading">
+            <h2 id="sprint3Heading">Sprint 3 Data Connection</h2>
+            <div class="sprint3-row">
+                <label for="sprint3Source">Data source
+                    <select id="sprint3Source">
+                        <option value="demo" selected>Demo data (Sprint 2)</option>
+                        <option value="mock">Mock API response</option>
+                        <option value="live">Live backend (when ready)</option>
+                    </select>
+                </label>
+                <button type="button" id="sprint3Refresh">Refresh data</button>
+            </div>
+            <p class="sprint3-hint">Live mode requires a running, compatible backend. Mock mode is simulated.</p>
+            <p id="sprint3Message" class="sprint3-message" role="status" aria-live="polite">Currently showing Sprint 2 demo data.</p>
+        </section>
+
         <section class="metrics" aria-label="Network monitoring summary">
             <article class="metric-card">
                 <span class="metric-icon" aria-hidden="true">📱</span>
-                <div><p>Connected Devices</p><strong id="deviceCount" aria-live="polite">0</strong>
-                    <span>Devices in current data</span></div>
+                <div>
+                    <p>Connected Devices</p>
+                    <strong id="deviceCount" aria-live="polite">0</strong>
+                    <span>Devices in current data</span>
+                </div>
             </article>
             <article class="metric-card">
                 <span class="metric-icon purple" aria-hidden="true">📋</span>
-                <div><p>Network Events</p><strong id="eventCount" aria-live="polite">0</strong>
-                    <span>Events in current data</span></div>
+                <div>
+                    <p>Network Events</p>
+                    <strong id="eventCount" aria-live="polite">0</strong>
+                    <span>Events in current data</span>
+                </div>
             </article>
         </section>
 
@@ -56,21 +79,40 @@
             <div class="system-card">
                 <div class="system-icon" aria-hidden="true">🖥</div>
                 <div class="system-info">
-                    <div class="system-row"><span>Backend Connection</span><strong id="backendStatus" aria-live="polite">Demo Mode</strong></div>
-                    <div class="system-row"><span>Last Event</span><strong id="lastUpdate">--</strong></div>
-                    <div class="system-row"><span>Network Scan</span><strong id="scanStatus">Simulated</strong></div>
+                    <div class="system-row">
+                        <span>Backend Connection</span>
+                        <strong id="backendStatus" aria-live="polite">Demo Mode</strong>
+                    </div>
+                    <div class="system-row">
+                        <span>Last Event</span>
+                        <strong id="lastUpdate">--</strong>
+                    </div>
+                    <div class="system-row">
+                        <span>Network Scan</span>
+                        <strong id="scanStatus">Simulated</strong>
+                    </div>
                 </div>
             </div>
         </section>
 
         <nav class="bottom-nav" aria-label="Main navigation">
-            <a href="space.html" class="nav-item active" aria-current="page"><span aria-hidden="true">⌂</span><small>Home</small></a>
-            <a href="events.html" class="nav-item"><span aria-hidden="true">☷</span><small>Events</small></a>
-            <button type="button" class="nav-item disabled" aria-label="Alerts planned for a later sprint" disabled><span aria-hidden="true">♢</span><small>Alerts</small></button>
-            <button type="button" class="nav-item disabled" aria-label="Settings planned for a later sprint" disabled><span aria-hidden="true">⚙</span><small>Settings</small></button>
+            <a href="space.html" class="nav-item active" aria-current="page">
+                <span aria-hidden="true">⌂</span><small>Home</small>
+            </a>
+            <a href="events.html" class="nav-item">
+                <span aria-hidden="true">☷</span><small>Events</small>
+            </a>
+            <button type="button" class="nav-item disabled" aria-label="Alerts planned for a later sprint" disabled>
+                <span aria-hidden="true">♢</span><small>Alerts</small>
+            </button>
+            <button type="button" class="nav-item disabled" aria-label="Settings planned for a later sprint" disabled>
+                <span aria-hidden="true">⚙</span><small>Settings</small>
+            </button>
         </nav>
     </main>
-    <!-- Keep the Sprint 2 functions available for existing 18 tests. -->
+
+    <!-- Keep Sprint 2 functionality available for its existing regression tests. -->
     <script src="script.js"></script>
+    <script type="module" src="sprint3/dashboard-controller.js"></script>
 </body>
 </html>
