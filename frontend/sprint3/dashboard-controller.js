@@ -1,4 +1,8 @@
 import { loadSource } from "./source-service.js";
+import { createPoller } from "./poller.js";
+
+// Sprint 2 still owns the original dashboard functions.
+// Sprint 3 controls mock and optional backend data loading.
 
 const sourceSelect = document.getElementById("sprint3Source");
 const refreshButton = document.getElementById("sprint3Refresh");
@@ -14,6 +18,7 @@ function updateMessage(text, level = "info") {
 
 function showMockMode() {
     setDashboardMode(false);
+
     document.getElementById("monitoringStatus").textContent = "Mock API Data";
     document.getElementById("monitoringMessage").textContent =
         "Displaying simulated API response events";
@@ -52,7 +57,6 @@ async function refreshSource() {
         if (number !== requestNumber) return;
 
         updateDashboard(events);
-
         lastSync.textContent =
             "Last successful refresh: " + new Date().toLocaleString();
 
@@ -107,6 +111,37 @@ document.getElementById("retryButton").addEventListener(
     },
     true
 );
+
+// Reuse the polling utility from Commit 18.
+const pollButton = document.getElementById("sprint3Poll");
+
+const poller = createPoller(() => {
+    if (sourceSelect.value !== "demo" && !document.hidden) {
+        return refreshSource();
+    }
+}, 15000);
+
+function stopPolling() {
+    poller.stop();
+    pollButton.textContent = "Start auto-refresh";
+    pollButton.setAttribute("aria-pressed", "false");
+}
+
+pollButton.addEventListener("click", () => {
+    if (poller.running) {
+        stopPolling();
+        updateMessage("Auto-refresh stopped.");
+    } else if (sourceSelect.value === "demo") {
+        updateMessage("Select mock or live data before enabling auto-refresh.");
+    } else {
+        poller.start();
+        pollButton.textContent = "Stop auto-refresh";
+        pollButton.setAttribute("aria-pressed", "true");
+        updateMessage("Auto-refresh enabled (every 15 seconds).");
+    }
+});
+
+sourceSelect.addEventListener("change", stopPolling);
 
 sourceSelect.disabled = true;
 refreshButton.disabled = true;
