@@ -1,394 +1,76 @@
-
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DOME ALERT</title>
-
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="dashboard.css">
 </head>
-
 <body>
-
-    <main
-        class="app"
-        aria-label="DOME ALERT Dashboard"
-    >
-
-        <!-- Header -->
+    <main class="app" aria-label="DOME ALERT Dashboard">
         <header class="app-header">
-
-            <div>
-                <h1>DOME ALERT</h1>
-                <p>Smart Home Network Monitoring</p>
-            </div>
-
-            <button
-                class="icon-button"
-                type="button"
-                aria-label="Settings planned for a later sprint"
-                disabled
-            >
-                ⚙
-            </button>
-
+            <div><h1>DOME ALERT</h1><p>Smart Home Network Monitoring</p></div>
+            <button class="icon-button" type="button" aria-label="Settings planned for a later sprint" disabled>⚙</button>
         </header>
 
-
-        <!-- Monitoring Status -->
-        <section
-            class="status-card"
-            aria-label="Network monitoring status"
-        >
-
-            <div
-                class="status-icon"
-                aria-hidden="true"
-            >
-                📡
-            </div>
-
+        <section class="status-card" aria-label="Network monitoring status">
+            <div class="status-icon" aria-hidden="true">📡</div>
             <div class="status-content">
-
-                <span class="label">
-                    Monitoring Status
-                </span>
-
-                <h2
-                    id="monitoringStatus"
-                    aria-live="polite"
-                >
-                    Demo Mode
-                </h2>
-
-                <p id="monitoringMessage">
-                    Displaying simulated network activity
-                </p>
-
+                <span class="label">Monitoring Status</span>
+                <h2 id="monitoringStatus" aria-live="polite">Demo Mode</h2>
+                <p id="monitoringMessage">Displaying simulated network activity</p>
             </div>
-
-            <span
-                id="monitoringIndicator"
-                class="status-dot"
-                role="img"
-                aria-label="Demo monitoring status"
-            ></span>
-
+            <span id="monitoringIndicator" class="status-dot" role="img" aria-label="Demo monitoring status"></span>
         </section>
 
-
-        <!-- Dashboard Metrics -->
-        <section
-            class="metrics"
-            aria-label="Network monitoring summary"
-        >
-
-            <!-- Connected Devices -->
+        <section class="metrics" aria-label="Network monitoring summary">
             <article class="metric-card">
-
-                <span
-                    class="metric-icon"
-                    aria-hidden="true"
-                >
-                    📱
-                </span>
-
-                <div>
-
-                    <p>
-                        Connected Devices
-                    </p>
-
-                    <strong
-                        id="deviceCount"
-                        aria-live="polite"
-                    >
-                        0
-                    </strong>
-
-                    <span>
-                        Devices in current data
-                    </span>
-
-                </div>
-
+                <span class="metric-icon" aria-hidden="true">📱</span>
+                <div><p>Connected Devices</p><strong id="deviceCount" aria-live="polite">0</strong>
+                    <span>Devices in current data</span></div>
             </article>
-
-
-            <!-- Network Events -->
             <article class="metric-card">
-
-                <span
-                    class="metric-icon purple"
-                    aria-hidden="true"
-                >
-                    📋
-                </span>
-
-                <div>
-
-                    <p>
-                        Network Events
-                    </p>
-
-                    <strong
-                        id="eventCount"
-                        aria-live="polite"
-                    >
-                        0
-                    </strong>
-
-                    <span>
-                        Events in current data
-                    </span>
-
-                </div>
-
+                <span class="metric-icon purple" aria-hidden="true">📋</span>
+                <div><p>Network Events</p><strong id="eventCount" aria-live="polite">0</strong>
+                    <span>Events in current data</span></div>
             </article>
-
         </section>
 
-
-        <!-- Recent Network Activity -->
-        <section
-            class="activity-section"
-            aria-labelledby="recentActivityHeading"
-        >
-
+        <section class="activity-section" aria-labelledby="recentActivityHeading">
             <div class="section-heading">
-
-                <h2 id="recentActivityHeading">
-                    Recent Network Activity
-                </h2>
-
-                <a
-                    href="events.html"
-                    class="view-all"
-                >
-                    View All
-                </a>
-
+                <h2 id="recentActivityHeading">Recent Network Activity</h2>
+                <a href="events.html" class="view-all">View All</a>
             </div>
-
-
-            <!-- Loading State -->
-            <div
-                id="loadingState"
-                class="message-state hidden"
-                role="status"
-                aria-live="polite"
-            >
-                Loading network activity...
+            <div id="loadingState" class="message-state hidden" role="status" aria-live="polite">Loading network activity...</div>
+            <div id="errorState" class="message-state error-state hidden" role="alert">
+                <p>Unable to load network activity.</p>
+                <button id="retryButton" type="button">Retry</button>
             </div>
-
-
-            <!-- Error State -->
-            <div
-                id="errorState"
-                class="message-state error-state hidden"
-                role="alert"
-            >
-
-                <p>
-                    Unable to load network activity.
-                </p>
-
-                <button
-                    id="retryButton"
-                    type="button"
-                >
-                    Retry
-                </button>
-
-            </div>
-
-
-            <!-- Empty State -->
-            <div
-                id="emptyState"
-                class="message-state hidden"
-                role="status"
-            >
-                No network activity recorded yet.
-            </div>
-
-
-            <!-- Dynamically Rendered Activity Cards -->
-            <div
-                id="activityList"
-                aria-live="polite"
-                aria-label="Recent network events"
-            ></div>
-
+            <div id="emptyState" class="message-state hidden" role="status">No network activity recorded yet.</div>
+            <div id="activityList" aria-live="polite" aria-label="Recent network events"></div>
         </section>
 
-
-        <!-- System Status -->
-        <section
-            class="system-section"
-            aria-labelledby="systemStatusHeading"
-        >
-
-            <h2 id="systemStatusHeading">
-                System Status
-            </h2>
-
+        <section class="system-section" aria-labelledby="systemStatusHeading">
+            <h2 id="systemStatusHeading">System Status</h2>
             <div class="system-card">
-
-                <div
-                    class="system-icon"
-                    aria-hidden="true"
-                >
-                    🖥
-                </div>
-
+                <div class="system-icon" aria-hidden="true">🖥</div>
                 <div class="system-info">
-
-                    <!-- Backend Connection -->
-                    <div class="system-row">
-
-                        <span>
-                            Backend Connection
-                        </span>
-
-                        <strong
-                            id="backendStatus"
-                            aria-live="polite"
-                        >
-                            Demo Mode
-                        </strong>
-
-                    </div>
-
-
-                    <!-- Last Event Update -->
-                    <div class="system-row">
-
-                        <span>
-                            Last Event
-                        </span>
-
-                        <strong id="lastUpdate">
-                            --
-                        </strong>
-
-                    </div>
-
-
-                    <!-- Network Scan Status -->
-                    <div class="system-row">
-
-                        <span>
-                            Network Scan
-                        </span>
-
-                        <strong id="scanStatus">
-                            Simulated
-                        </strong>
-
-                    </div>
-
+                    <div class="system-row"><span>Backend Connection</span><strong id="backendStatus" aria-live="polite">Demo Mode</strong></div>
+                    <div class="system-row"><span>Last Event</span><strong id="lastUpdate">--</strong></div>
+                    <div class="system-row"><span>Network Scan</span><strong id="scanStatus">Simulated</strong></div>
                 </div>
-
             </div>
-
         </section>
 
-
-        <!-- Bottom Navigation -->
-        <nav
-            class="bottom-nav"
-            aria-label="Main navigation"
-        >
-
-            <!-- Home -->
-            <a
-                href="space.html"
-                class="nav-item active"
-                aria-current="page"
-            >
-
-                <span aria-hidden="true">
-                    ⌂
-                </span>
-
-                <small>
-                    Home
-                </small>
-
-            </a>
-
-
-            <!-- Events -->
-            <a
-                href="events.html"
-                class="nav-item"
-            >
-
-                <span aria-hidden="true">
-                    ☷
-                </span>
-
-                <small>
-                    Events
-                </small>
-
-            </a>
-
-
-            <!-- Alerts - Future Sprint -->
-            <button
-                type="button"
-                class="nav-item disabled"
-                aria-label="Alerts planned for a later sprint"
-                disabled
-            >
-
-                <span aria-hidden="true">
-                    ♢
-                </span>
-
-                <small>
-                    Alerts
-                </small>
-
-            </button>
-
-
-            <!-- Settings - Future Sprint -->
-            <button
-                type="button"
-                class="nav-item disabled"
-                aria-label="Settings planned for a later sprint"
-                disabled
-            >
-
-                <span aria-hidden="true">
-                    ⚙
-                </span>
-
-                <small>
-                    Settings
-                </small>
-
-            </button>
-
+        <nav class="bottom-nav" aria-label="Main navigation">
+            <a href="space.html" class="nav-item active" aria-current="page"><span aria-hidden="true">⌂</span><small>Home</small></a>
+            <a href="events.html" class="nav-item"><span aria-hidden="true">☷</span><small>Events</small></a>
+            <button type="button" class="nav-item disabled" aria-label="Alerts planned for a later sprint" disabled><span aria-hidden="true">♢</span><small>Alerts</small></button>
+            <button type="button" class="nav-item disabled" aria-label="Settings planned for a later sprint" disabled><span aria-hidden="true">⚙</span><small>Settings</small></button>
         </nav>
-
     </main>
-
-
-    <!-- Dashboard JavaScript -->
+    <!-- Keep the Sprint 2 functions available for existing 18 tests. -->
     <script src="script.js"></script>
-
 </body>
-
 </html>
