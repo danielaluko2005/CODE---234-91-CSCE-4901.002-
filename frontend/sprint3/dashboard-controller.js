@@ -1,11 +1,9 @@
 import { loadSource } from "./source-service.js";
 
-// Sprint 2 keeps its original dashboard functions.
-// Sprint 3 manages the additional data-source controls.
-
 const sourceSelect = document.getElementById("sprint3Source");
 const refreshButton = document.getElementById("sprint3Refresh");
 const message = document.getElementById("sprint3Message");
+const lastSync = document.getElementById("sprint3LastSync");
 
 let requestNumber = 0;
 
@@ -16,14 +14,14 @@ function updateMessage(text, level = "info") {
 
 function showMockMode() {
     setDashboardMode(false);
-
     document.getElementById("monitoringStatus").textContent = "Mock API Data";
     document.getElementById("monitoringMessage").textContent =
         "Displaying simulated API response events";
     document.getElementById("backendStatus").textContent = "Not connected (mock)";
     document.getElementById("scanStatus").textContent = "Simulated";
     document.getElementById("monitoringIndicator").setAttribute(
-        "aria-label", "Simulated API data"
+        "aria-label",
+        "Simulated API data"
     );
 }
 
@@ -54,6 +52,9 @@ async function refreshSource() {
         if (number !== requestNumber) return;
 
         updateDashboard(events);
+
+        lastSync.textContent =
+            "Last successful refresh: " + new Date().toLocaleString();
 
         if (source === "mock") {
             showMockMode();
