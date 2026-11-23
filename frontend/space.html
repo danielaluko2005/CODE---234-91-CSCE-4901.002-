@@ -36,6 +36,7 @@
                     </select>
                 </label>
                 <button type="button" id="sprint3Refresh">Refresh data</button>
+                <button type="button" id="sprint3Poll" aria-pressed="false">Start auto-refresh</button>
             </div>
             <p class="sprint3-hint">Live mode requires a running, compatible backend. Mock mode is simulated.</p>
             <p id="sprint3Message" class="sprint3-message" role="status" aria-live="polite">Currently showing Sprint 2 demo data.</p>
@@ -45,13 +46,19 @@
         <section class="metrics" aria-label="Network monitoring summary">
             <article class="metric-card">
                 <span class="metric-icon" aria-hidden="true">📱</span>
-                <div><p>Connected Devices</p><strong id="deviceCount" aria-live="polite">0</strong>
-                    <span>Devices in current data</span></div>
+                <div>
+                    <p>Connected Devices</p>
+                    <strong id="deviceCount" aria-live="polite">0</strong>
+                    <span>Devices in current data</span>
+                </div>
             </article>
             <article class="metric-card">
                 <span class="metric-icon purple" aria-hidden="true">📋</span>
-                <div><p>Network Events</p><strong id="eventCount" aria-live="polite">0</strong>
-                    <span>Events in current data</span></div>
+                <div>
+                    <p>Network Events</p>
+                    <strong id="eventCount" aria-live="polite">0</strong>
+                    <span>Events in current data</span>
+                </div>
             </article>
         </section>
 
